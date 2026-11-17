@@ -1,0 +1,971 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#121a2e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+</head>
+<body>
+<title>Drumheller Wishes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Caveat:wght@500;700&family=DM+Sans:wght@400;500;700&display=swap">
+<style>
+/* Layout: one phone-sized AR viewport; the fountain scene is always underneath and screens float over it as pencil-outlined cards. */
+:root{
+  --ink:#1E2733;
+  --ink-2:#56606D;
+  --paper:#E9EDEB;
+  --card:#FFFFFF;
+  --line:#C8CFCC;
+  --marker:#DCF045;
+  --marker-ink:#25300A;
+  --night:#121a2e;
+  --glass:rgba(255,255,255,.14);
+  --glass-line:rgba(255,255,255,.38);
+  --white:#FFFFFF;
+  --scrim:rgba(13,19,34,.62);
+  --f-display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --f-body:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-hand:"Caveat","Bradley Hand","Segoe Print",cursive;
+  color-scheme:light;
+}
+[hidden]{display:none!important}
+html,body{height:100%;margin:0;background:var(--night);color:var(--ink);font-family:var(--f-body);font-size:15px;overflow:hidden;overscroll-behavior:none}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:3px solid var(--marker);outline-offset:2px}
+
+#app{position:fixed;top:0;bottom:0;left:50%;transform:translateX(-50%);width:min(100%,480px);overflow:hidden;background:var(--night);user-select:none;-webkit-user-select:none}
+#scene,#cam{position:absolute;inset:0;width:100%;height:100%;display:block}
+#scene{touch-action:none}
+#cam{object-fit:cover}
+
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;gap:12px;
+  padding-top:calc(env(safe-area-inset-top,0px) + 14px);
+  padding-bottom:calc(env(safe-area-inset-bottom,0px) + 18px);
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+  pointer-events:none}
+.screen > *{pointer-events:auto;position:relative}
+.screen > .spacer{flex:1;pointer-events:none}
+.scrim{position:absolute!important;inset:0;background:var(--scrim);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}
+
+.hand{font-family:var(--f-hand);font-weight:700}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:44px}
+.place{display:flex;flex-direction:column;color:var(--white);line-height:1}
+.place .hand{font-size:21px;color:var(--marker)}
+.place b{font-family:var(--f-display);font-size:21px;font-weight:800;letter-spacing:-.01em;text-shadow:0 1px 10px rgba(0,0,0,.35)}
+.chip-btn{white-space:nowrap;flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;background:var(--glass);color:var(--white);border:1px solid var(--glass-line);border-radius:999px;padding:8px 13px;font-weight:700;font-size:13px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.chip-btn svg{width:16px;height:16px}
+.icon-btn{flex:0 0 auto;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--glass);border:1px solid var(--glass-line);color:var(--white);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.icon-btn svg{width:18px;height:18px}
+.icon-btn.ink{background:var(--card);border:2px solid var(--ink);color:var(--ink)}
+.w42{width:42px;flex:0 0 auto}
+
+.pill{min-height:52px;padding:0 28px;border-radius:999px;border:2px solid var(--ink);background:var(--card);color:var(--ink);font-family:var(--f-display);font-weight:800;font-size:18px;box-shadow:0 3px 0 var(--ink);transition:transform .08s,box-shadow .08s}
+.pill:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.pill.solid{background:var(--marker);color:var(--marker-ink)}
+.pill.wide{width:100%}
+.link-btn{background:none;border:0;color:var(--white);font-weight:700;font-size:14px;text-decoration:underline;text-underline-offset:4px;padding:8px}
+.link-btn.dark{color:var(--ink-2)}
+
+/* start */
+.start-copy{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;color:var(--white)}
+.start-copy .hand{font-size:22px;color:var(--marker)}
+.start-copy h1{margin:0;font-family:var(--f-display);font-weight:800;font-size:30px;line-height:1.05;letter-spacing:-.015em;text-wrap:balance}
+.start-copy p{margin:0 0 6px;max-width:300px;opacity:.85;line-height:1.4}
+.reticle{align-self:center;width:min(70vw,280px);aspect-ratio:1.6;position:relative}
+.reticle span{position:absolute;width:34px;height:34px;border:3px solid var(--marker)}
+.reticle span:nth-child(1){top:0;left:0;border-right:0;border-bottom:0;border-radius:10px 0 0 0}
+.reticle span:nth-child(2){top:0;right:0;border-left:0;border-bottom:0;border-radius:0 10px 0 0}
+.reticle span:nth-child(3){bottom:0;left:0;border-right:0;border-top:0;border-radius:0 0 0 10px}
+.reticle span:nth-child(4){bottom:0;right:0;border-left:0;border-top:0;border-radius:0 0 10px 0}
+.align-hint{align-self:center;text-align:center;color:var(--white);font-size:13px;background:rgba(10,16,30,.55);border:1px solid var(--marker);border-radius:999px;padding:6px 12px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+
+/* home */
+.home-cta{display:flex;flex-direction:column;align-items:center;gap:8px}
+.home-cta .big{font-size:36px;color:var(--white);text-shadow:0 2px 14px rgba(0,0,0,.5);line-height:1}
+#homeCoin{width:84px;margin-bottom:4px}
+.glint-hint{align-self:center;max-width:260px;text-align:center;color:var(--white);font-size:13px;background:rgba(10,16,30,.45);border:1px solid var(--glass-line);border-radius:999px;padding:6px 12px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+
+/* coin 3D */
+.coin3d{aspect-ratio:1;max-width:100%;perspective:900px;touch-action:none;cursor:grab;position:relative}
+.coin3d:active{cursor:grabbing}
+.coin3d .spin{position:absolute;inset:0;transform-style:preserve-3d}
+.coin3d .face,.coin3d .edge{position:absolute;inset:0;width:100%;height:100%;border-radius:50%;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.coin3d .edge{backface-visibility:visible;-webkit-backface-visibility:visible}
+.coin3d .face{-webkit-user-drag:none;pointer-events:none}
+
+/* make */
+.tabs{display:flex;flex:1;max-width:320px;border:2px solid var(--ink);border-radius:12px;overflow:hidden;background:var(--card)}
+.tab{flex:1;padding:8px 6px;font-family:var(--f-display);font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.05em;line-height:1.1;color:var(--ink-2);background:transparent;border:0}
+.tab + .tab{border-left:2px solid var(--ink)}
+.tab.on{background:var(--marker);color:var(--ink)}
+.stage{flex:1;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+.drag-hint{color:var(--white);opacity:.85;font-size:19px}
+#makeCoin{width:min(46vw,22vh,240px)}
+.sheet{background:var(--card);border:2px solid var(--ink);border-radius:22px;padding:16px;display:flex;flex-direction:column;gap:14px;box-shadow:0 12px 40px rgba(0,0,0,.35);max-height:58%;overflow-y:auto;overscroll-behavior:contain}
+.row{display:flex;flex-direction:column;gap:8px;min-width:0}
+.row.inline{flex-direction:row;align-items:flex-end;gap:14px;flex-wrap:wrap}
+.row.inline > div{display:flex;flex-direction:column;gap:8px}
+.lbl{font-weight:700;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-2)}
+.lbl i{font-style:normal;text-transform:none;letter-spacing:0;font-family:var(--f-hand);font-size:16px}
+.swatches,.motifs,.presets,.seg{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px}
+.sw{flex:0 0 auto;width:38px;height:38px;border-radius:50%;border:0;padding:0}
+.sw.on{box-shadow:0 0 0 2px var(--card),0 0 0 4px var(--ink)}
+.mo{flex:0 0 auto;width:50px;height:50px;border-radius:12px;border:2px solid var(--line);background:var(--card);padding:3px}
+.mo.on{border-color:var(--ink);background:var(--marker)}
+.mo img,.preset img{width:100%;height:100%;display:block;pointer-events:none}
+.seg button{border:2px solid var(--line);background:var(--card);border-radius:999px;padding:7px 12px;font-weight:700;font-size:13px}
+.seg button.on{border-color:var(--ink);background:var(--marker)}
+#initials{width:76px;border:2px solid var(--line);border-radius:10px;padding:7px 10px;font-family:var(--f-display);font-weight:800;text-transform:uppercase;letter-spacing:.1em;background:var(--card)}
+#initials:focus{border-color:var(--ink);outline:none}
+.preset{flex:0 0 auto;width:68px;display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:0;padding:2px;font-size:12px;font-weight:500;color:var(--ink-2);line-height:1.15;text-align:center}
+.preset span.img{width:50px;height:50px}
+
+.wish-title{font-size:30px;text-align:center;line-height:1}
+.note-box{position:relative;border:2px solid var(--ink);border-radius:14px;background:var(--card)}
+#note{display:block;width:100%;min-height:130px;resize:none;border:0;border-radius:14px;padding:12px 14px 28px;font-family:var(--f-hand);font-size:24px;line-height:1.15;background:transparent;outline:none;user-select:text;-webkit-user-select:text}
+#count{position:absolute;right:12px;bottom:8px;font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.toggle{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--ink)}
+.toggle input{width:20px;height:20px;accent-color:var(--ink)}
+.fineprint{font-size:12px;color:var(--ink-2);margin:-6px 0 0}
+
+/* toss */
+.toss-zone{display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--white)}
+.toss-zone .hand{font-size:28px;text-shadow:0 2px 10px rgba(0,0,0,.5)}
+.swipe-arrow{width:30px;height:46px;color:var(--marker);animation:bob 1.3s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(6px);opacity:.6}50%{transform:translateY(-6px);opacity:1}}
+#tossCoin{width:min(40vw,170px);aspect-ratio:1;touch-action:none;cursor:grab;filter:drop-shadow(0 10px 18px rgba(0,0,0,.45));transition:transform .25s cubic-bezier(.2,1.4,.4,1)}
+#tossCoin.dragging{transition:none}
+.title-hand{color:var(--white);font-size:24px}
+
+/* done */
+.card{background:var(--card);border:2px solid var(--ink);border-radius:22px;padding:20px;box-shadow:0 12px 40px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:8px}
+.card h2{font-family:var(--f-display);font-weight:800;font-size:24px;letter-spacing:-.01em;margin:0;text-wrap:balance;line-height:1.1}
+.card p{margin:0;color:var(--ink-2)}
+.card .splash{font-size:26px;color:var(--ink);line-height:1}
+.mark{background:linear-gradient(transparent 45%,var(--marker) 45%,var(--marker) 92%,transparent 92%);padding:0 2px;color:var(--ink);font-weight:700}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.btns .pill{flex:1 1 140px;padding:0 16px;font-size:16px}
+
+/* collection */
+.book{background:var(--paper)}
+.book .icon-btn{background:var(--card);border:2px solid var(--ink);color:var(--ink)}
+.book-title{font-family:var(--f-display);font-weight:800;font-size:22px;margin:0;letter-spacing:-.01em}
+.book-head{display:flex;align-items:flex-end;justify-content:space-between;gap:8px}
+.book-head .hand{font-size:18px;color:var(--ink-2);transform:rotate(-4deg)}
+.notebook{flex:1;min-height:0;display:flex;margin-left:12px;background:var(--card);border:2px solid var(--ink);border-radius:6px 18px 18px 6px;box-shadow:4px 5px 0 rgba(30,39,51,.15)}
+.spiral{position:absolute!important;left:-13px;top:14px;bottom:14px;width:26px;pointer-events:none;
+  background:radial-gradient(ellipse 9px 6px at 13px 14px,transparent 5px,var(--ink) 5.5px,var(--ink) 7px,transparent 7.5px) 0 0/26px 28px repeat-y}
+.grid-wrap{flex:1;min-height:0;overflow-y:auto;padding:16px 14px 20px 24px;overscroll-behavior:contain}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 14px}
+.pol{background:var(--card);border:1px solid var(--line);box-shadow:0 3px 8px rgba(30,39,51,.14);padding:8px 8px 4px;display:flex;flex-direction:column;gap:2px;transform:rotate(var(--tilt,0deg));position:relative;text-align:center}
+.pol .photo{aspect-ratio:1;background:radial-gradient(circle at 40% 35%,#4E9DC1,#1F5D7D 75%);display:grid;place-items:center;overflow:hidden}
+.pol .photo img{width:68%;filter:drop-shadow(0 4px 6px rgba(0,0,0,.35))}
+.pol .cap{font-family:var(--f-hand);font-weight:700;font-size:21px;color:var(--ink);font-variant-numeric:tabular-nums}
+.pol .badge{position:absolute;top:-6px;right:-6px;background:var(--marker);border:1.5px solid var(--ink);border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px}
+.pol.throw{border:2px dashed var(--ink-2);box-shadow:none;background:transparent;justify-content:center;align-items:center;min-height:160px;color:var(--ink-2);font-family:var(--f-hand);font-size:22px;line-height:1}
+.pol.throw svg{width:28px;height:28px}
+.empty{grid-column:1/-1;text-align:center;color:var(--ink-2);padding:24px 8px 4px}
+.empty .hand{display:block;font-size:24px;color:var(--ink)}
+.status-note{font-size:12px;color:var(--ink-2);text-align:center;margin:0}
+
+/* viewer */
+.viewer .vtitle{font-family:var(--f-display);font-weight:800;font-size:20px;letter-spacing:.06em;color:var(--white);margin:0;text-transform:uppercase;font-variant-numeric:tabular-nums}
+#viewCoin{width:min(56vw,30vh,230px)}
+.spin-hint{color:var(--white);font-size:20px;display:flex;align-items:center;gap:6px}
+.note-card{background:var(--card);border:2px solid var(--ink);border-radius:6px;padding:14px 16px 16px;box-shadow:0 12px 40px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:6px;transform:rotate(-1deg)}
+.note-card .date{font-size:22px;color:var(--ink-2);line-height:1}
+#viewNote{margin:0;font-family:var(--f-hand);font-size:27px;line-height:1.1;color:var(--ink);overflow-wrap:anywhere;user-select:text;-webkit-user-select:text}
+#viewNote.muted{font-size:22px;color:var(--ink-2)}
+.by{margin:0;font-size:12px;color:var(--ink-2);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+
+#toast{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 90px);transform:translateX(-50%);width:max-content;max-width:calc(100% - 32px);background:var(--ink);color:var(--white);padding:10px 14px;border-radius:12px;font-size:13px;text-align:center;z-index:20;opacity:0;transition:opacity .2s;pointer-events:none}
+#toast.show{opacity:1}
+
+@media (prefers-reduced-motion: reduce){.swipe-arrow{animation:none}.pill{transition:none}}
+</style>
+
+<div id="app">
+  <video id="cam" playsinline muted hidden></video>
+  <canvas id="scene" aria-label="Drumheller Fountain with coins glinting in the water"></canvas>
+
+  <!-- START: frames 1-2, right after scanning the QR code -->
+  <section class="screen" id="s-start" hidden>
+    <div class="scrim"></div>
+    <div class="spacer"></div>
+    <div class="reticle" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+    <div class="spacer"></div>
+    <div class="start-copy">
+      <span class="hand">you scanned the coin display</span>
+      <h1>Point your phone at the fountain</h1>
+      <p>Your camera shows the real fountain, and your coin lands in the water. Nothing is recorded or saved.</p>
+      <button class="pill solid wide" id="startCam">Start camera</button>
+      <button class="link-btn" id="startIllus">Use the illustrated fountain instead</button>
+    </div>
+  </section>
+
+  <!-- HOME: story frame 3 -->
+  <section class="screen" id="s-home" hidden>
+    <header class="topbar">
+      <div class="place"><span class="hand">you're at</span><b>Drumheller Fountain</b></div>
+      <button class="chip-btn" id="camBtn" aria-pressed="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+        <span id="camLbl">Use camera</span>
+      </button>
+    </header>
+    <p class="align-hint" id="alignHint" hidden>Drag the ring onto the fountain's basin. Pinch to resize it.</p>
+    <p class="glint-hint" id="glintHint" hidden>Tap a glint in the water to read someone's wish</p>
+    <div class="spacer"></div>
+    <div class="home-cta">
+      <div class="coin3d" id="homeCoin" aria-hidden="true"></div>
+      <div class="hand big">Make a wish</div>
+      <button class="pill solid" id="startBtn">Toss a coin</button>
+      <button class="link-btn" id="collBtn">See the wishes in the fountain (<span id="countLbl">0</span>)</button>
+    </div>
+  </section>
+
+  <!-- DESIGN + NOTE: frames 4 & 5 -->
+  <section class="screen" id="s-make" hidden>
+    <div class="scrim"></div>
+    <header class="topbar">
+      <button class="icon-btn" id="makeClose" aria-label="Back to the fountain"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <div class="tabs" role="tablist">
+        <button class="tab on" role="tab" id="tabDesign" aria-selected="true">Design your coin</button>
+        <button class="tab" role="tab" id="tabNote" aria-selected="false">Add a note</button>
+      </div>
+      <span class="w42"></span>
+    </header>
+    <div class="stage">
+      <div class="coin3d" id="makeCoin" tabindex="0" aria-label="Your coin. Drag or use arrow keys to turn it."></div>
+      <p class="hand drag-hint">drag to turn it over</p>
+    </div>
+
+    <div class="sheet" id="designSheet">
+      <div class="row"><span class="lbl">Metal</span><div class="swatches" id="metalRow"></div></div>
+      <div class="row"><span class="lbl">Design</span><div class="motifs" id="motifRow"></div></div>
+      <div class="row inline">
+        <div><span class="lbl">Edge</span><div class="seg" id="rimRow"></div></div>
+        <div><label class="lbl" for="initials">Initials</label><input id="initials" maxlength="3" autocomplete="off" placeholder="ABC"></div>
+      </div>
+      <div class="row"><span class="lbl">Presets <i>styled after real coins</i></span><div class="presets" id="presetRow"></div></div>
+      <button class="pill solid wide" id="toNote">Next: add a note</button>
+    </div>
+
+    <div class="sheet" id="noteSheet" hidden>
+      <div class="hand wish-title">Add your wish here!</div>
+      <div class="note-box">
+        <textarea id="note" maxlength="200" placeholder="Write your wish here"></textarea>
+        <span id="count">0/200 chars</span>
+      </div>
+      <label class="toggle" for="share"><input type="checkbox" id="share" checked> Let other visitors read my wish</label>
+      <p class="fineprint" id="shareNote">Anyone who opens this page can read shared wishes.</p>
+      <button class="pill solid wide" id="toToss">Take it to the fountain</button>
+    </div>
+  </section>
+
+  <!-- TOSS: frame 7 -->
+  <section class="screen" id="s-toss" hidden>
+    <header class="topbar">
+      <button class="icon-btn" id="tossBack" aria-label="Back to editing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <span class="hand title-hand">aim for the water</span>
+      <span class="w42"></span>
+    </header>
+    <div class="spacer"></div>
+    <div class="toss-zone">
+      <svg class="swipe-arrow" viewBox="0 0 30 46" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 44V4M4 15L15 4l11 11"/></svg>
+      <canvas id="tossCoin" width="360" height="360" aria-label="Your coin. Swipe up to toss it." role="img"></canvas>
+      <span class="hand">swipe up to toss</span>
+      <button class="link-btn" id="tossTap">or tap here to toss</button>
+    </div>
+  </section>
+
+  <!-- DONE -->
+  <section class="screen" id="s-done" hidden>
+    <div class="spacer"></div>
+    <div class="card">
+      <span class="hand splash">splash!</span>
+      <h2>Your wish is in the fountain</h2>
+      <p>Coin <span class="mark" id="doneNum"></span> <span id="doneCount"></span></p>
+      <p>Tap any glint in the water to read someone else's wish.</p>
+      <div class="btns">
+        <button class="pill solid" id="doneColl">See your coins</button>
+        <button class="pill" id="doneAgain">Toss another</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- COLLECTION: frame 8 -->
+  <section class="screen book" id="s-coll" hidden>
+    <header class="topbar">
+      <button class="icon-btn" id="collBack" aria-label="Back to the fountain"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <div class="tabs" role="tablist">
+        <button class="tab on" role="tab" id="tabMine" aria-selected="true">Your coins</button>
+        <button class="tab" role="tab" id="tabAll" aria-selected="false">All coins</button>
+      </div>
+      <span class="w42"></span>
+    </header>
+    <div class="book-head"><h1 class="book-title">Coin collection</h1><span class="hand" id="bookCount"></span></div>
+    <div class="notebook">
+      <div class="spiral"></div>
+      <div class="grid-wrap"><div class="grid" id="grid"></div></div>
+    </div>
+    <p class="status-note" id="dataNote"></p>
+  </section>
+
+  <!-- VIEW A COIN: frame 9 -->
+  <section class="screen viewer" id="s-view" hidden>
+    <div class="scrim"></div>
+    <header class="topbar">
+      <button class="icon-btn" id="viewClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <h2 class="vtitle" id="viewTitle">Coin</h2>
+      <span class="w42"></span>
+    </header>
+    <div class="stage">
+      <span class="hand spin-hint">drag to spin 360°</span>
+      <div class="coin3d" id="viewCoin" tabindex="0" aria-label="Coin. Drag or use arrow keys to turn it."></div>
+    </div>
+    <div class="note-card">
+      <span class="hand date" id="viewDate"></span>
+      <p id="viewNote"></p>
+      <p class="by" id="viewBy"></p>
+    </div>
+  </section>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+</div>
+
+<script>
+(() => {
+const $ = s => document.querySelector(s);
+const app = $('#app');
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- helpers ---------- */
+function hashStr(s){ let h = 2166136261; for (let i=0;i<s.length;i++){ h ^= s.charCodeAt(i); h = Math.imul(h,16777619); } return h>>>0; }
+function rng(seed){ let x = seed>>>0 || 1; return () => { x = (Math.imul(x,1664525)+1013904223)>>>0; return x/4294967296; }; }
+const lerp = (a,b,t) => a+(b-a)*t;
+const clamp = (v,a,b) => Math.max(a,Math.min(b,v));
+function fmtDate(ms){ const d = new Date(ms); return `${d.getMonth()+1}/${String(d.getDate()).padStart(2,'0')}/${String(d.getFullYear()).slice(-2)}`; }
+let toastT;
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),3200); }
+function lsGet(k,d){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):d; }catch{ return d; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch{} }
+
+/* ---------- coin art ---------- */
+const METALS = {
+  gold:   {name:'Gold',        hi:'#FCEAA6', mid:'#DCAE48', lo:'#8A6316', ink:'#5E420A'},
+  silver: {name:'Silver',      hi:'#F5F7F9', mid:'#B7BEC7', lo:'#646C77', ink:'#3E454F'},
+  copper: {name:'Copper',      hi:'#F7C19E', mid:'#C66C3C', lo:'#743116', ink:'#4F1F0B'},
+  marker: {name:'Highlighter', hi:'#F7FFB8', mid:'#D2EA3A', lo:'#7B8F0E', ink:'#465305'},
+  jade:   {name:'Jade',        hi:'#CDF1E2', mid:'#5FB596', lo:'#215C48', ink:'#123B2D'},
+};
+const MOTIFS = ['flower','fountain','star','heart','wave','moon','wheat'];
+const MOTIF_NAMES = {flower:'Sunflower',fountain:'Fountain',star:'Star',heart:'Heart',wave:'Waves',moon:'Moon',wheat:'Wheat'};
+const RIMS = {ridged:'Ridged', beaded:'Beaded', smooth:'Smooth'};
+const PRESETS = [
+  {name:'Wheat penny',   d:{metal:'copper', motif:'wheat',    rim:'smooth', text:''}},
+  {name:'Silver quarter',d:{metal:'silver', motif:'star',     rim:'ridged', text:''}},
+  {name:'Gold dollar',   d:{metal:'gold',   motif:'fountain', rim:'smooth', text:''}},
+  {name:'Sunflower',     d:{metal:'marker', motif:'flower',   rim:'beaded', text:''}},
+  {name:'Jade moon',     d:{metal:'jade',   motif:'moon',     rim:'beaded', text:''}},
+];
+
+function motifShape(kind, S, color){
+  const c = document.createElement('canvas'); c.width = c.height = S;
+  const g = c.getContext('2d'); g.translate(S/2,S/2);
+  const s = S*0.42;
+  g.fillStyle = g.strokeStyle = color; g.lineCap = 'round'; g.lineJoin = 'round';
+  if (kind==='flower'){
+    for (let i=0;i<12;i++){ g.save(); g.rotate(i*Math.PI/6); g.beginPath(); g.ellipse(0,-s*.64,s*.14,s*.32,0,0,Math.PI*2); g.fill(); g.restore(); }
+    g.beginPath(); g.arc(0,0,s*.38,0,Math.PI*2); g.fill();
+    g.save(); g.beginPath(); g.arc(0,0,s*.3,0,Math.PI*2); g.clip();
+    g.globalCompositeOperation='destination-out'; g.lineWidth=s*.04;
+    for (let k=-4;k<=4;k++){ const o=k*s*.085; g.beginPath(); g.moveTo(-s,o-s); g.lineTo(s,o+s); g.stroke(); g.beginPath(); g.moveTo(-s,o+s); g.lineTo(s,o-s); g.stroke(); }
+    g.restore();
+  } else if (kind==='star'){
+    g.beginPath();
+    for (let i=0;i<10;i++){ const r = i%2 ? s*.36 : s*.86; const a = -Math.PI/2 + i*Math.PI/5; g.lineTo(Math.cos(a)*r, Math.sin(a)*r); }
+    g.closePath(); g.fill();
+  } else if (kind==='heart'){
+    g.beginPath(); g.moveTo(0,s*.78);
+    g.bezierCurveTo(-s*1.15,s*.02,-s*.72,-s*.9,0,-s*.36);
+    g.bezierCurveTo(s*.72,-s*.9,s*1.15,s*.02,0,s*.78); g.fill();
+  } else if (kind==='fountain'){
+    g.lineWidth = s*.1;
+    g.beginPath(); g.ellipse(0,s*.5,s*.8,s*.2,0,0,Math.PI*2); g.stroke();
+    g.beginPath(); g.moveTo(-s*.08,s*.45); g.lineTo(-s*.08,0); g.moveTo(s*.08,s*.45); g.lineTo(s*.08,0); g.stroke();
+    g.beginPath(); g.ellipse(0,-s*.02,s*.38,s*.1,0,0,Math.PI*2); g.fill();
+    g.lineWidth = s*.08;
+    g.beginPath(); g.moveTo(0,-s*.1); g.lineTo(0,-s*.82); g.stroke();
+    g.beginPath(); g.moveTo(-s*.05,-s*.15); g.quadraticCurveTo(-s*.42,-s*.95,-s*.66,s*.25); g.stroke();
+    g.beginPath(); g.moveTo(s*.05,-s*.15); g.quadraticCurveTo(s*.42,-s*.95,s*.66,s*.25); g.stroke();
+  } else if (kind==='wave'){
+    g.lineWidth = s*.12;
+    for (const y of [-.4,0,.4]){ g.beginPath(); for (let x=-.8;x<=.801;x+=.04){ g.lineTo(x*s, (y+Math.sin(x*7.5)*.12)*s); } g.stroke(); }
+  } else if (kind==='moon'){
+    g.beginPath(); g.arc(-s*.08,0,s*.74,0,Math.PI*2); g.fill();
+    g.globalCompositeOperation='destination-out';
+    g.beginPath(); g.arc(s*.26,-s*.2,s*.62,0,Math.PI*2); g.fill();
+    g.globalCompositeOperation='source-over';
+    for (const [x,y,r] of [[s*.5,s*.42,s*.09],[s*.7,s*.05,s*.06]]){ g.beginPath(); g.arc(x,y,r,0,Math.PI*2); g.fill(); }
+  } else if (kind==='wheat'){
+    g.lineWidth = s*.07;
+    g.beginPath(); g.moveTo(0,s*.88); g.lineTo(0,-s*.75); g.stroke();
+    for (let i=0;i<5;i++){ const y = -s*.6 + i*s*.28; for (const side of [-1,1]){ g.save(); g.translate(side*s*.16,y); g.rotate(side*.55); g.beginPath(); g.ellipse(0,0,s*.11,s*.24,0,0,Math.PI*2); g.fill(); g.restore(); } }
+    g.beginPath(); g.ellipse(0,-s*.78,s*.1,s*.2,0,0,Math.PI*2); g.fill();
+  }
+  return c;
+}
+
+function arcText(g, str, radius, size){
+  g.save(); g.font = `800 ${size}px ${getComputedStyle(document.documentElement).getPropertyValue('--f-display')}`;
+  g.textAlign='center'; g.textBaseline='middle';
+  const widths=[...str].map(ch=>g.measureText(ch).width + size*.12);
+  const total = widths.reduce((a,b)=>a+b,0)/radius;
+  let a = -Math.PI/2 - total/2;
+  [...str].forEach((ch,i)=>{ const w=widths[i]/radius; a += w/2; g.save(); g.rotate(a+Math.PI/2); g.fillText(ch,0,-radius); g.restore(); a += w/2; });
+  g.restore();
+}
+
+function drawCoin(cv, d, side, n, when){
+  const S = cv.width, r = S/2, g = cv.getContext('2d'), m = METALS[d.metal] || METALS.gold;
+  const disp = getComputedStyle(document.documentElement).getPropertyValue('--f-display');
+  g.clearRect(0,0,S,S); g.save(); g.translate(r,r);
+  let gr = g.createRadialGradient(-r*.35,-r*.4,r*.05,0,0,r);
+  gr.addColorStop(0,m.hi); gr.addColorStop(.6,m.mid); gr.addColorStop(1,m.lo);
+  g.fillStyle = gr; g.beginPath(); g.arc(0,0,r*.985,0,Math.PI*2); g.fill();
+  // rim
+  if (d.rim==='ridged'){
+    g.strokeStyle = m.lo; g.globalAlpha=.55; g.lineWidth = S*.006;
+    for (let i=0;i<120;i++){ const a=i/120*Math.PI*2; g.beginPath(); g.moveTo(Math.cos(a)*r*.86,Math.sin(a)*r*.86); g.lineTo(Math.cos(a)*r*.975,Math.sin(a)*r*.975); g.stroke(); }
+    g.globalAlpha=1;
+  } else if (d.rim==='beaded'){
+    for (let i=0;i<40;i++){ const a=i/40*Math.PI*2; const x=Math.cos(a)*r*.9, y=Math.sin(a)*r*.9;
+      g.fillStyle=m.lo; g.beginPath(); g.arc(x+r*.008,y+r*.01,r*.036,0,Math.PI*2); g.fill();
+      g.fillStyle=m.hi; g.beginPath(); g.arc(x,y,r*.032,0,Math.PI*2); g.fill(); }
+  } else {
+    g.strokeStyle=m.hi; g.lineWidth=r*.05; g.beginPath(); g.arc(0,0,r*.9,0,Math.PI*2); g.stroke();
+  }
+  // field
+  const f = g.createRadialGradient(-r*.25,-r*.3,r*.05,0,0,r*.82);
+  f.addColorStop(0,m.hi); f.addColorStop(1,m.mid);
+  g.fillStyle=f; g.beginPath(); g.arc(0,0,r*.82,0,Math.PI*2); g.fill();
+  g.strokeStyle=m.lo; g.globalAlpha=.6; g.lineWidth=r*.02; g.stroke(); g.globalAlpha=1;
+
+  if (side==='front'){
+    const hasText = !!(d.text||'').trim();
+    const MS = Math.round(r*(hasText?1.0:1.2));
+    const oy = hasText ? -r*.1 : 0;
+    g.drawImage(motifShape(d.motif,MS,m.hi), -MS/2 + r*.018, -MS/2 + oy + r*.022);
+    g.drawImage(motifShape(d.motif,MS,m.ink), -MS/2, -MS/2 + oy);
+    if (hasText){
+      g.font = `800 ${r*.2}px ${disp}`; g.textAlign='center'; g.textBaseline='middle';
+      const t = d.text.trim().toUpperCase().split('').join(' ');
+      g.fillStyle=m.hi; g.fillText(t, r*.015, r*.56+r*.018);
+      g.fillStyle=m.ink; g.fillText(t, 0, r*.56);
+    }
+  } else {
+    g.fillStyle=m.ink; arcText(g,'DRUMHELLER FOUNTAIN',r*.66,r*.12);
+    const MS=Math.round(r*.5);
+    g.drawImage(motifShape('fountain',MS,m.ink), -MS/2, -r*.42);
+    g.textAlign='center'; g.textBaseline='middle';
+    g.font = `500 ${r*.11}px ${disp}`; g.fillText('NO.', 0, r*.02);
+    g.font = `800 ${r*.27}px ${disp}`; g.fillText(n ? String(n) : '·····', 0, r*.24);
+    g.font = `700 ${r*.1}px ${disp}`; g.fillText(fmtDate(when||Date.now()), 0, r*.5);
+  }
+  // sheen
+  const sh = g.createLinearGradient(-r,-r,r,r);
+  sh.addColorStop(0,'rgba(255,255,255,.35)'); sh.addColorStop(.45,'rgba(255,255,255,0)'); sh.addColorStop(1,'rgba(0,0,0,.18)');
+  g.fillStyle=sh; g.beginPath(); g.arc(0,0,r*.985,0,Math.PI*2); g.fill();
+  g.restore();
+  return cv;
+}
+const thumbCache = new Map();
+function coinURL(d, side='front', n, when, size=200){
+  const key = JSON.stringify([d,side,n,side==='back'?fmtDate(when||0):0,size]);
+  if (thumbCache.has(key)) return thumbCache.get(key);
+  const c = document.createElement('canvas'); c.width=c.height=size;
+  const url = drawCoin(c,d,side,n,when).toDataURL();
+  thumbCache.set(key,url); return url;
+}
+
+/* ---------- 3D coin widget ---------- */
+const coins3d = [];
+function Coin3D(el, opts={}){
+  el.innerHTML = '<div class="spin"><img class="face back" alt=""><div class="edges"></div><img class="face front" alt=""></div>';
+  const spin = el.querySelector('.spin'), front = el.querySelector('.front'), back = el.querySelector('.back'), edges = el.querySelector('.edges');
+  const N = 9; const eds = [];
+  for (let i=0;i<N;i++){ const e=document.createElement('div'); e.className='edge'; edges.appendChild(e); eds.push(e); }
+  let ry = opts.start ?? -25, rx = 6, vy = opts.auto ?? .35, drag = null;
+  const auto = reduced ? 0 : (opts.auto ?? .35);
+  function layout(){
+    const w = el.clientWidth || 200, T = Math.max(4, w*.075);
+    front.style.transform = `translateZ(${T/2}px)`;
+    back.style.transform = `rotateY(180deg) translateZ(${T/2}px)`;
+    eds.forEach((e,i)=>{ e.style.transform = `translateZ(${-T/2 + (i+.5)*T/N}px) scale(.985)`; });
+  }
+  el.addEventListener('pointerdown', e => { drag = {x:e.clientX, y:e.clientY}; vy = 0; try{ el.setPointerCapture(e.pointerId); }catch{} });
+  el.addEventListener('pointermove', e => { if(!drag) return; const dx=e.clientX-drag.x, dy=e.clientY-drag.y; drag.x=e.clientX; drag.y=e.clientY; ry += dx*.7; rx = clamp(rx - dy*.4,-40,40); vy = dx*.7; });
+  const end = () => { drag = null; };
+  el.addEventListener('pointerup', end); el.addEventListener('pointercancel', end);
+  el.addEventListener('keydown', e => {
+    if (e.key==='ArrowLeft'){ ry-=20; vy=0; e.preventDefault(); }
+    if (e.key==='ArrowRight'){ ry+=20; vy=0; e.preventDefault(); }
+    if (e.key==='ArrowUp'){ rx=clamp(rx+10,-40,40); e.preventDefault(); }
+    if (e.key==='ArrowDown'){ rx=clamp(rx-10,-40,40); e.preventDefault(); }
+  });
+  const api = {
+    el,
+    set(d, n, when){
+      const m = METALS[d.metal]||METALS.gold;
+      front.src = coinURL(d,'front',n,when,512);
+      back.src = coinURL(d,'back',n,when,512);
+      eds.forEach(e => e.style.background = `radial-gradient(circle, ${m.mid} 0 80%, ${m.lo} 100%)`);
+      layout();
+    },
+    show(){ ry = opts.start ?? -25; rx = 6; vy = auto; },
+    step(){
+      if (!el.offsetParent) return;
+      if (!drag){ vy = lerp(vy, auto, .03); ry += vy; rx *= .96; }
+      spin.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+    },
+    layout
+  };
+  coins3d.push(api); return api;
+}
+
+/* ---------- state ---------- */
+const state = {
+  screen: 'home', prev: 'home',
+  design: {metal:'marker', motif:'flower', rim:'beaded', text:''},
+  coins: [], loaded: false, db: null, myId: null, mode: 'local',
+  mine: new Set(lsGet('drumheller-mine', [])),
+  collTab: 'mine', lastTossed: null, camera: false, stream: null,
+};
+const EXAMPLES = [
+  {id:'ex1', n:24817, design:{metal:'copper',motif:'wheat',rim:'smooth',text:''}, note:'Pass organic chem and still like chemistry afterward.', createdAt: Date.now()-86400e3*12, example:true},
+  {id:'ex2', n:30552, design:{metal:'silver',motif:'star',rim:'ridged',text:'JK'}, note:'That the cherry trees bloom on a sunny weekend this year.', createdAt: Date.now()-86400e3*30, example:true},
+  {id:'ex3', n:41290, design:{metal:'jade',motif:'moon',rim:'beaded',text:''}, note:'', hidden:true, createdAt: Date.now()-86400e3*3, example:true},
+  {id:'ex4', n:18742, design:{metal:'gold',motif:'heart',rim:'beaded',text:''}, note:'Find my people here before winter quarter.', createdAt: Date.now()-86400e3*45, example:true},
+  {id:'ex5', n:57003, design:{metal:'marker',motif:'flower',rim:'beaded',text:''}, note:'One more summer with everyone before graduation.', createdAt: Date.now()-86400e3*7, example:true},
+];
+const isMine = c => !c.example && ((state.myId && c.author===state.myId) || state.mine.has(c.id));
+
+/* ---------- screens ---------- */
+const screens = ['start','home','make','toss','done','coll','view'];
+function show(name){
+  if (name!=='view') state.prev = name;
+  state.screen = name;
+  screens.forEach(s => $('#s-'+s).hidden = (s!==name));
+  coins3d.forEach(c => c.layout());
+  if (name==='home') refreshHome();
+  if (name==='coll') renderGrid();
+}
+
+/* ---------- scene (illustrated fountain / camera overlay) ---------- */
+const cv = $('#scene'), ctx = cv.getContext('2d');
+let W=0,H=0,DPR=1,bg=null; const basin={cx:0,cy:0,rx:0,ry:0};
+const parts=[], ripples=[]; let glints=[]; let toss=null; let jetAcc=[];
+const JETS = [{u:0,v:0,h:.27,rate:2.6,size:2.4}];
+for (let i=0;i<10;i++){ const a=i/10*Math.PI*2; JETS.push({u:Math.cos(a)*.55, v:Math.sin(a)*.55, h:.09, rate:.55, size:1.7, inward:true}); }
+
+function resize(){
+  const r = app.getBoundingClientRect(); W=r.width; H=r.height; DPR=Math.min(2,window.devicePixelRatio||1);
+  cv.width=Math.round(W*DPR); cv.height=Math.round(H*DPR); ctx.setTransform(DPR,0,0,DPR,0,0);
+  basin.cx=W/2; basin.cy=H*.6; basin.rx=Math.min(W*.6,H*.34); basin.ry=basin.rx*.28;
+  bg = renderBg(); placeGlints(); coins3d.forEach(c=>c.layout());
+}
+function renderBg(){
+  const c=document.createElement('canvas'); c.width=Math.round(W*DPR); c.height=Math.round(H*DPR);
+  const g=c.getContext('2d'); g.scale(DPR,DPR); const R=rng(7);
+  const hz = basin.cy - basin.ry*2.9;
+  const sky=g.createLinearGradient(0,0,0,hz); sky.addColorStop(0,'#141E3A'); sky.addColorStop(.5,'#46598A'); sky.addColorStop(.85,'#C99A92'); sky.addColorStop(1,'#EDBB8E');
+  g.fillStyle=sky; g.fillRect(0,0,W,hz+2);
+  g.fillStyle='rgba(255,255,255,.7)'; for (let i=0;i<40;i++){ const x=R()*W, y=R()*hz*.45; g.fillRect(x,y,R()<.2?1.6:1,R()<.2?1.6:1); }
+  // the mountain at the end of the vista
+  const mx=W*.52, peak=hz-H*.15, base=W*.78;
+  g.fillStyle='#8894B9'; g.beginPath(); g.moveTo(mx-base,hz); g.quadraticCurveTo(mx-base*.4,hz-H*.05,mx-base*.13,peak+H*.035); g.lineTo(mx,peak); g.lineTo(mx+base*.16,peak+H*.04); g.quadraticCurveTo(mx+base*.45,hz-H*.05,mx+base,hz); g.closePath(); g.fill();
+  g.fillStyle='#EEF1F9'; g.beginPath(); g.moveTo(mx-base*.13,peak+H*.035); g.lineTo(mx,peak); g.lineTo(mx+base*.16,peak+H*.04); g.lineTo(mx+base*.1,peak+H*.055); g.lineTo(mx+base*.04,peak+H*.043); g.lineTo(mx-base*.02,peak+H*.06); g.lineTo(mx-base*.08,peak+H*.047); g.closePath(); g.fill();
+  const haze=g.createLinearGradient(0,hz-H*.06,0,hz); haze.addColorStop(0,'rgba(237,187,142,0)'); haze.addColorStop(1,'rgba(237,187,142,.55)'); g.fillStyle=haze; g.fillRect(0,hz-H*.06,W,H*.06);
+  // tree lines framing the vista
+  const trees=(a,b,col)=>{ g.fillStyle=col; for (let x=a;x<b;x+=10+R()*14){ const rr=12+R()*26; const lift = Math.abs((x-W/2)/(W/2)); g.beginPath(); g.arc(x,hz-rr*.45-lift*H*.05,rr,0,Math.PI*2); g.fill(); } g.fillRect(a-30,hz-lift0(a,b)*H*.05,b-a+60,H*.06); };
+  const lift0=(a,b)=>Math.min(Math.abs((a-W/2)/(W/2)),Math.abs((b-W/2)/(W/2)));
+  trees(-40,W*.3,'#2A3B57'); trees(W*.7,W+40,'#2A3B57');
+  trees(-40,W*.24,'#1C2B42'); trees(W*.76,W+40,'#1C2B42');
+  // lawn + path
+  const lawn=g.createLinearGradient(0,hz,0,H); lawn.addColorStop(0,'#3E6B4F'); lawn.addColorStop(1,'#16301F');
+  g.fillStyle=lawn; g.fillRect(0,hz,W,H-hz);
+  g.fillStyle='rgba(205,195,170,.35)'; g.beginPath(); g.moveTo(W*.46,hz); g.lineTo(W*.54,hz); g.lineTo(W*.9,H); g.lineTo(W*.1,H); g.closePath(); g.fill();
+  // basin
+  const {cx,cy,rx,ry}=basin, th=ry*.38;
+  g.fillStyle='#7E796D'; g.beginPath(); g.ellipse(cx,cy+th,rx*1.08,ry*1.08,0,0,Math.PI*2); g.fill(); g.fillRect(cx-rx*1.08,cy,rx*2.16,th);
+  g.fillStyle='#D6D0C2'; g.beginPath(); g.ellipse(cx,cy,rx*1.08,ry*1.08,0,0,Math.PI*2); g.fill();
+  const wg=g.createLinearGradient(0,cy-ry,0,cy+ry); wg.addColorStop(0,'#1C5476'); wg.addColorStop(1,'#3489AE');
+  g.fillStyle=wg; g.beginPath(); g.ellipse(cx,cy,rx,ry,0,0,Math.PI*2); g.fill();
+  g.strokeStyle='rgba(255,255,255,.25)'; g.lineWidth=1; g.beginPath(); g.ellipse(cx,cy,rx*.995,ry*.99,0,Math.PI*1.05,Math.PI*1.95); g.stroke();
+  return c;
+}
+function placeGlints(){
+  const list = state.coins.slice(0,80);
+  glints = list.map(c => {
+    const R = rng(hashStr(c.id)); const a = R()*Math.PI*2, rad = .3 + Math.sqrt(R())*.6;
+    return {coin:c, u:Math.cos(a)*rad, v:Math.sin(a)*rad, ph:R()*6.28, m:METALS[c.design?.metal]||METALS.gold};
+  });
+}
+const anchor = {dx:0, dy:0, s:1};
+function B(){ return state.camera ? {cx:basin.cx+anchor.dx, cy:basin.cy+anchor.dy, rx:basin.rx*anchor.s, ry:basin.ry*anchor.s} : basin; }
+function waterPos(u,v){ const b=B(); return [b.cx+u*b.rx, b.cy+v*b.ry]; }
+
+let tossFront=null, tossBack=null;
+function tick(dt, t){
+  if (state.screen==='coll') return;
+  const {cx,cy,rx,ry}=B(), G=H*1.15;
+  ctx.clearRect(0,0,W,H);
+  if (!state.camera) ctx.drawImage(bg,0,0,W,H);
+  else {
+    ctx.save();
+    ctx.fillStyle='rgba(90,170,210,.14)'; ctx.beginPath(); ctx.ellipse(cx,cy,rx,ry,0,0,Math.PI*2); ctx.fill();
+    ctx.setLineDash([8,8]); ctx.lineDashOffset=-t*20; ctx.strokeStyle = state.aligned ? 'rgba(255,255,255,.6)' : 'rgba(220,240,69,.95)'; ctx.lineWidth=2.5; ctx.stroke();
+    if (!state.aligned){ ctx.setLineDash([]); ctx.fillStyle='rgba(220,240,69,.95)'; for (const [x,y] of [[cx-rx,cy],[cx+rx,cy],[cx,cy-ry],[cx,cy+ry]]){ ctx.beginPath(); ctx.arc(x,y,5,0,Math.PI*2); ctx.fill(); } }
+    ctx.restore();
+  }
+  // ripples
+  ctx.save(); ctx.beginPath(); ctx.ellipse(cx,cy,rx,ry,0,0,Math.PI*2); ctx.clip();
+  if (!state.camera){
+    ctx.strokeStyle='rgba(255,255,255,.12)'; ctx.lineWidth=1.2;
+    for (let i=0;i<7;i++){ const yy=cy-ry*.6+i*ry*.2, off=Math.sin(t*.8+i)*rx*.3; ctx.beginPath(); ctx.moveTo(cx+off-rx*.15,yy); ctx.lineTo(cx+off+rx*.15,yy); ctx.stroke(); }
+  }
+  for (let i=ripples.length-1;i>=0;i--){ const p=ripples[i]; p.age+=dt; if (p.age<0) continue; const k=p.age/p.life; if (k>=1){ ripples.splice(i,1); continue; }
+    ctx.strokeStyle=`rgba(235,247,255,${.7*(1-k)})`; ctx.lineWidth=2*(1-k)+.5; ctx.beginPath(); ctx.ellipse(p.x,p.y,p.max*k,p.max*k*(ry/rx),0,0,Math.PI*2); ctx.stroke(); }
+  ctx.restore();
+  // glints = other people's coins resting in the water
+  for (const gl of glints){
+    const [x,y]=waterPos(gl.u,gl.v); const tw=.55+.45*Math.sin(t*2.2+gl.ph);
+    const fresh = state.lastTossed && gl.coin.id===state.lastTossed;
+    ctx.globalAlpha=.65+.35*tw; ctx.fillStyle=gl.m.mid; ctx.beginPath(); ctx.ellipse(x,y,5,2.4,0,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle=gl.m.hi; ctx.beginPath(); ctx.ellipse(x-1,y-.6,2.2,1,0,0,Math.PI*2); ctx.fill();
+    if (tw>.93 || fresh){ ctx.strokeStyle='rgba(255,255,255,.9)'; ctx.lineWidth=1.2; const L=fresh?6+3*tw:5*tw; ctx.beginPath(); ctx.moveTo(x-L,y-1); ctx.lineTo(x+L,y-1); ctx.moveTo(x,y-1-L); ctx.lineTo(x,y-1+L); ctx.stroke(); }
+    if (fresh){ ctx.strokeStyle=`rgba(220,240,69,${.5+.4*tw})`; ctx.lineWidth=2; ctx.beginPath(); ctx.ellipse(x,y,14,7,0,0,Math.PI*2); ctx.stroke(); }
+    ctx.globalAlpha=1;
+  }
+  // jets
+  if (!state.camera) JETS.forEach((j,idx)=>{
+    jetAcc[idx]=(jetAcc[idx]||0)+j.rate*dt*60;
+    const [x0,y0]=waterPos(j.u,j.v); const v0=Math.sqrt(2*G*j.h*H);
+    while (jetAcc[idx]>=1){ jetAcc[idx]--;
+      const flight=2*v0/G; let vx=(Math.random()-.5)*rx*.06;
+      if (j.inward) vx += -j.u*rx*.45/flight;
+      parts.push({x:x0+(Math.random()-.5)*3,y:y0,vx,vy:-v0*(.9+Math.random()*.12),floor:y0+(Math.random()-.3)*ry*.2,s:j.size}); }
+  });
+  for (let i=parts.length-1;i>=0;i--){ const p=parts[i]; p.vy+=G*dt; p.x+=p.vx*dt; p.y+=p.vy*dt;
+    if (p.vy>0 && p.y>p.floor){ if (p.big && Math.random()<.15) ripples.push({x:p.x,y:p.floor,max:12,age:0,life:.6}); parts.splice(i,1); continue; } }
+  ctx.fillStyle='rgba(200,225,255,.18)';
+  for (const p of parts){ const s=p.s*2.6; ctx.fillRect(p.x-s/2,p.y-s/2,s,s); }
+  ctx.fillStyle='rgba(240,248,255,.8)';
+  for (const p of parts){ ctx.fillRect(p.x-p.s/2,p.y-p.s/2,p.s,p.s); }
+  if (parts.length>900) parts.splice(0,parts.length-900);
+  // the tossed coin
+  if (toss){
+    const k = clamp((performance.now()-toss.t0)/toss.dur,0,1);
+    const e = 1-Math.pow(1-k,1.6);
+    const x = lerp(toss.sx,toss.ex,e), y = lerp(toss.sy,toss.ey,k) - toss.arc*4*k*(1-k);
+    const size = lerp(toss.size, 9, Math.pow(k,.7));
+    const c = Math.cos(k*Math.PI*7);
+    ctx.save(); ctx.globalAlpha=.25*k; ctx.fillStyle='#000'; ctx.beginPath(); ctx.ellipse(toss.ex,toss.ey+2,size*.5,size*.18,0,0,Math.PI*2); ctx.fill(); ctx.restore();
+    ctx.save(); ctx.translate(x,y); ctx.scale(Math.max(Math.abs(c),.08),1);
+    ctx.drawImage(c>=0?tossFront:tossBack,-size/2,-size/2,size,size); ctx.restore();
+    if (k>=1){ splash(toss.ex,toss.ey); const done=toss.onLand; toss=null; done&&done(); }
+  }
+}
+function splash(x,y){
+  const b=B(); for (let i=0;i<3;i++) ripples.push({x,y,max:b.rx*(.22+i*.1),age:-i*.18,life:1.4});
+  const G=H*1.15;
+  for (let i=0;i<46;i++){ const a=-Math.PI/2+(Math.random()-.5)*1.3, v=Math.sqrt(2*G*H*(.02+Math.random()*.06));
+    parts.push({x,y,vx:Math.cos(a)*v*.8,vy:Math.sin(a)*v,floor:y+Math.random()*4,s:1.5+Math.random()*2,big:true}); }
+  if (navigator.vibrate) try{ navigator.vibrate(30); }catch{}
+}
+// In camera mode the ring is the virtual basin: drag it onto the real one, pinch to resize.
+const ptrs = new Map(); let gesture = null;
+function snapGesture(){ gesture = ptrs.size ? {a:{...anchor}, pts:new Map([...ptrs].map(([k,v])=>[k,{...v}]))} : null; }
+cv.addEventListener('pointerdown', e => {
+  if (!['home','done'].includes(state.screen)) return;
+  const r=cv.getBoundingClientRect(), px=e.clientX-r.left, py=e.clientY-r.top;
+  if (!ptrs.size){
+    let best=null, bd=26*26;
+    for (const gl of glints){ const [x,y]=waterPos(gl.u,gl.v); const d=(x-px)**2+(y-py)**2; if (d<bd){ bd=d; best=gl; } }
+    if (best){ openView(best.coin); return; }
+  }
+  if (!state.camera) return;
+  ptrs.set(e.pointerId,{x:px,y:py}); try{ cv.setPointerCapture(e.pointerId); }catch{}
+  snapGesture();
+});
+cv.addEventListener('pointermove', e => {
+  if (!ptrs.has(e.pointerId) || !gesture) return;
+  const r=cv.getBoundingClientRect(); ptrs.set(e.pointerId,{x:e.clientX-r.left,y:e.clientY-r.top});
+  const ids=[...ptrs.keys()].filter(k=>gesture.pts.has(k));
+  if (!ids.length) return;
+  const cen = (m) => { let x=0,y=0; ids.forEach(k=>{ x+=m.get(k).x; y+=m.get(k).y; }); return [x/ids.length,y/ids.length]; };
+  const [x0,y0]=cen(gesture.pts), [x1,y1]=cen(ptrs);
+  anchor.dx = clamp(gesture.a.dx + x1-x0, -W*.5, W*.5);
+  anchor.dy = clamp(gesture.a.dy + y1-y0, -H*.45, H*.35);
+  if (ids.length>=2){
+    const d=(m)=>Math.hypot(m.get(ids[0]).x-m.get(ids[1]).x, m.get(ids[0]).y-m.get(ids[1]).y);
+    anchor.s = clamp(gesture.a.s * d(ptrs)/Math.max(20,d(gesture.pts)), .35, 2.4);
+  }
+  if (!state.aligned){ state.aligned=true; refreshHome(); }
+});
+const ptrEnd = e => { if (ptrs.delete(e.pointerId)) snapGesture(); };
+cv.addEventListener('pointerup', ptrEnd); cv.addEventListener('pointercancel', ptrEnd);
+cv.addEventListener('wheel', e => { if (!state.camera) return; e.preventDefault(); anchor.s = clamp(anchor.s * (e.deltaY<0?1.06:.94), .35, 2.4); }, {passive:false});
+
+/* ---------- camera ---------- */
+const NO_CAM = "Your camera isn't available here, so you're seeing the illustrated fountain.";
+async function startCamera(){
+  const vid=$('#cam');
+  try{
+    if (!navigator.mediaDevices?.getUserMedia) throw new Error('none');
+    const s = await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});
+    state.stream=s; vid.srcObject=s; vid.hidden=false; await vid.play().catch(()=>{});
+    state.camera=true; parts.length=0;
+  }catch{ state.camera=false; vid.hidden=true; }
+  setCamUI(); return state.camera;
+}
+function stopCamera(){ state.stream?.getTracks().forEach(t=>t.stop()); state.stream=null; state.camera=false; $('#cam').hidden=true; setCamUI(); }
+function setCamUI(){
+  $('#camLbl').textContent = state.camera ? 'Illustration' : 'Use camera';
+  $('#camBtn').setAttribute('aria-pressed', String(state.camera));
+  refreshHome();
+}
+$('#camBtn').addEventListener('click', async () => { if (state.camera) stopCamera(); else if (!(await startCamera())) toast(NO_CAM); });
+$('#startCam').addEventListener('click', async () => { const ok = await startCamera(); show('home'); if (!ok) toast(NO_CAM); });
+$('#startIllus').addEventListener('click', () => show('home'));
+document.addEventListener('visibilitychange', () => { const v=$('#cam'); if (state.camera && !document.hidden) v.play().catch(()=>{}); });
+
+/* ---------- data ---------- */
+let dbTimer=null;
+async function initData(){
+  let db=null, user=null;
+  if (!window.claude) await new Promise(r=>setTimeout(r,400));
+  if (window.claude?.use){ try{ [db,user] = await Promise.all([window.claude.use('db'), window.claude.use('user')]); }catch{} }
+  if (db){
+    state.db=db; state.mode='shared';
+    try{ state.myId = user ? await user.id() : null; }catch{}
+    dbTimer = setTimeout(()=>{ if(!state.loaded){ $('#dataNote').textContent="Can't reach the fountain's wishes yet. They'll appear once the connection returns."; } }, 10000);
+    db.collection('coins').orderBy('createdAt','desc').limit(300).onSnapshot(snap => {
+      state.coins = snap.docs.map(d => ({id:d.id, ...d.data()})).filter(c => c.design && c.n);
+      if (!snap.metadata.fromCache){ state.loaded=true; clearTimeout(dbTimer); $('#dataNote').textContent='Shared with everyone who opens this page.'; }
+      dataChanged();
+    }, err => {
+      clearTimeout(dbTimer); state.loaded=true;
+      $('#dataNote').textContent = "The fountain's shared wishes are unavailable right now.";
+      dataChanged();
+    });
+  } else {
+    state.mode='local';
+    state.coins = [...lsGet('drumheller-coins',[]), ...EXAMPLES].sort((a,b)=>b.createdAt-a.createdAt);
+    state.loaded=true;
+    $('#dataNote').textContent='Demo mode: your coins stay on this phone. Coins marked Example are samples.';
+    dataChanged();
+  }
+}
+function dataChanged(){ placeGlints(); refreshHome(); if (state.screen==='coll') renderGrid(); }
+
+async function saveCoin(c, privateNote){
+  state.mine.add(c.id); lsSet('drumheller-mine',[...state.mine]);
+  if (state.mode==='shared'){
+    try{
+      await state.db.collection('coins').doc(c.id).set(c);
+      if (privateNote && state.myId) await state.db.collection('data/users/'+state.myId).doc(c.id).set({note:privateNote});
+      return true;
+    }catch(e){
+      toast(e?.code==='quota_exceeded' ? 'The fountain is full right now, so this coin was saved on this phone only.' : "You can view wishes here but not add them, so this coin was saved on this phone only.");
+    }
+  }
+  const local = lsGet('drumheller-coins',[]);
+  local.unshift({...c, privateNote: privateNote||''}); lsSet('drumheller-coins',local);
+  if (state.mode==='local' || !state.coins.find(x=>x.id===c.id)){ state.coins.unshift({...c, privateNote: privateNote||''}); dataChanged(); }
+  return false;
+}
+
+/* ---------- home ---------- */
+const homeCoin = Coin3D($('#homeCoin'), {auto:.9, start:0});
+function refreshHome(){
+  const count = state.coins.length;
+  $('#countLbl').textContent = count;
+  const needAlign = state.screen==='home' && state.camera && !state.aligned;
+  $('#alignHint').hidden = !needAlign;
+  $('#glintHint').hidden = !(state.screen==='home' && count>0 && !needAlign);
+}
+$('#startBtn').addEventListener('click', () => { setTab('design'); show('make'); makeCoin.show(); });
+$('#collBtn').addEventListener('click', () => { setCollTab(state.coins.some(isMine)?'mine':'all'); show('coll'); });
+
+/* ---------- design + note ---------- */
+const makeCoin = Coin3D($('#makeCoin'));
+function renderDesign(){
+  const d=state.design;
+  makeCoin.set(d); homeCoin.set(d);
+  const mr=$('#metalRow'); mr.innerHTML='';
+  for (const [k,m] of Object.entries(METALS)){
+    const b=document.createElement('button'); b.className='sw'+(d.metal===k?' on':''); b.setAttribute('aria-label',m.name); b.setAttribute('aria-pressed',d.metal===k);
+    b.style.background=`radial-gradient(circle at 35% 30%, ${m.hi}, ${m.mid} 60%, ${m.lo})`;
+    b.onclick=()=>{ d.metal=k; renderDesign(); }; mr.appendChild(b);
+  }
+  const mo=$('#motifRow'); mo.innerHTML='';
+  for (const k of MOTIFS){
+    const b=document.createElement('button'); b.className='mo'+(d.motif===k?' on':''); b.setAttribute('aria-label',MOTIF_NAMES[k]); b.setAttribute('aria-pressed',d.motif===k);
+    b.innerHTML=`<img alt="" src="${coinURL({...d,motif:k,text:''},'front',0,0,96)}">`;
+    b.onclick=()=>{ d.motif=k; renderDesign(); }; mo.appendChild(b);
+  }
+  const rr=$('#rimRow'); rr.innerHTML='';
+  for (const [k,label] of Object.entries(RIMS)){
+    const b=document.createElement('button'); b.textContent=label; b.className=d.rim===k?'on':''; b.setAttribute('aria-pressed',d.rim===k);
+    b.onclick=()=>{ d.rim=k; renderDesign(); }; rr.appendChild(b);
+  }
+  const pr=$('#presetRow'); if (!pr.children.length){
+    for (const p of PRESETS){
+      const b=document.createElement('button'); b.className='preset';
+      b.innerHTML=`<span class="img"><img alt="" src="${coinURL(p.d,'front',0,0,110)}"></span>${p.name}`;
+      b.onclick=()=>{ Object.assign(state.design,p.d,{text:$('#initials').value}); renderDesign(); };
+      pr.appendChild(b);
+    }
+  }
+  drawCoin($('#tossCoin'), d, 'front');
+}
+$('#initials').addEventListener('input', e => { state.design.text = e.target.value.replace(/[^A-Za-z0-9&]/g,'').slice(0,3); e.target.value=state.design.text; renderDesign(); });
+function setTab(t){
+  const isD = t==='design';
+  $('#tabDesign').classList.toggle('on',isD); $('#tabNote').classList.toggle('on',!isD);
+  $('#tabDesign').setAttribute('aria-selected',isD); $('#tabNote').setAttribute('aria-selected',!isD);
+  $('#designSheet').hidden=!isD; $('#noteSheet').hidden=isD;
+}
+$('#tabDesign').onclick=()=>setTab('design');
+$('#tabNote').onclick=()=>setTab('note');
+$('#toNote').onclick=()=>{ setTab('note'); setTimeout(()=>$('#note').focus({preventScroll:true}),50); };
+$('#makeClose').onclick=()=>show('home');
+const noteEl=$('#note');
+noteEl.addEventListener('input',()=>{ $('#count').textContent=`${noteEl.value.length}/200 chars`; lsSet('drumheller-draft',noteEl.value); });
+noteEl.value = lsGet('drumheller-draft',''); $('#count').textContent=`${noteEl.value.length}/200 chars`;
+$('#share').addEventListener('change',e=>{ $('#shareNote').textContent = e.target.checked ? 'Anyone who opens this page can read shared wishes.' : 'Others will see your coin in the fountain, but only you can read the wish.'; });
+$('#toToss').onclick=()=>{ noteEl.blur(); drawCoin($('#tossCoin'),state.design,'front'); resetTossCoin(); show('toss'); };
+
+/* ---------- toss ---------- */
+const tc=$('#tossCoin'); let tdrag=null;
+function resetTossCoin(){ tc.style.visibility='visible'; tc.classList.remove('dragging'); tc.style.transform=''; }
+tc.addEventListener('pointerdown',e=>{ if(toss) return; tdrag={x0:e.clientX,y0:e.clientY,hist:[[e.clientX,e.clientY,performance.now()]]}; tc.classList.add('dragging'); try{tc.setPointerCapture(e.pointerId);}catch{} });
+tc.addEventListener('pointermove',e=>{ if(!tdrag) return; const dx=e.clientX-tdrag.x0, dy=e.clientY-tdrag.y0; tc.style.transform=`translate(${dx}px,${Math.min(dy,40)}px) rotate(${dx*.1}deg)`; tdrag.hist.push([e.clientX,e.clientY,performance.now()]); if(tdrag.hist.length>8) tdrag.hist.shift(); });
+function tossEnd(e){
+  if(!tdrag) return; const d=tdrag; tdrag=null; tc.classList.remove('dragging');
+  const dx=e.clientX-d.x0, dy=e.clientY-d.y0; const h=d.hist[0]; const vt=Math.max(16,performance.now()-h[2]); const vy=(e.clientY-h[1])/vt, vx=(e.clientX-h[0])/vt;
+  if (dy<-45 || vy<-.6) launch(vx*120 + dx*.4); else tc.style.transform='';
+}
+tc.addEventListener('pointerup',tossEnd); tc.addEventListener('pointercancel',()=>{ tdrag=null; tc.classList.remove('dragging'); tc.style.transform=''; });
+$('#tossTap').onclick=()=>launch(0);
+$('#tossBack').onclick=()=>{ show('make'); setTab('note'); };
+
+function launch(dx){
+  if (toss) return;
+  const ar=app.getBoundingClientRect(), r=tc.getBoundingClientRect();
+  tossFront=document.createElement('canvas'); tossFront.width=tossFront.height=256; drawCoin(tossFront,state.design,'front');
+  const now=Date.now(), n=10000+Math.floor(Math.random()*89999);
+  tossBack=document.createElement('canvas'); tossBack.width=tossBack.height=256; drawCoin(tossBack,state.design,'back',n,now);
+  const R=Math.random(), b=B();
+  const ex = b.cx + clamp(dx,-b.rx*.6,b.rx*.6) + (R-.5)*b.rx*.15;
+  const ey = b.cy + b.ry*(.05 + Math.random()*.45);
+  toss={sx:r.left-ar.left+r.width/2, sy:r.top-ar.top+r.height/2, size:r.width, ex, ey, arc:H*.3, t0:performance.now(), dur:reduced?700:1150, onLand:()=>landed(n,now,ex,ey)};
+  tc.style.visibility='hidden';
+  document.querySelector('.toss-zone .hand').textContent='make your wish…';
+}
+async function landed(n, when, ex, ey){
+  const note = noteEl.value.trim(), share = $('#share').checked;
+  const id = 'c'+when.toString(36)+Math.random().toString(36).slice(2,7);
+  const coin = {id, n, design:{...state.design}, note: share?note:'', hidden: !share && !!note, createdAt: when, author: state.myId||null};
+  // place the new glint where the coin actually landed
+  const b=B(), u=(ex-b.cx)/b.rx, v=(ey-b.cy)/b.ry;
+  state.lastTossed=id;
+  landedSpots.set(id,[u,v]);
+  await saveCoin(coin, share?'':note);
+  const g = glints.find(g=>g.coin.id===id); if (g){ g.u=u; g.v=v; }
+  landedSpots.set(id,[u,v]);
+  noteEl.value=''; lsSet('drumheller-draft',''); $('#count').textContent='0/200 chars';
+  $('#doneNum').textContent='#'+n;
+  const others = state.coins.filter(c=>c.id!==id).length;
+  $('#doneCount').textContent = others ? `joined ${others} other coin${others===1?'':'s'} in the water.` : 'is the first coin in the water.';
+  setTimeout(()=>{ document.querySelector('.toss-zone .hand').textContent='swipe up to toss'; show('done'); }, reduced?200:900);
+}
+const landedSpots = new Map();
+const _place = placeGlints;
+placeGlints = function(){ _place(); for (const g of glints){ const s=landedSpots.get(g.coin.id); if (s){ g.u=s[0]; g.v=s[1]; } } };
+
+$('#doneColl').onclick=()=>{ setCollTab('mine'); show('coll'); };
+$('#doneAgain').onclick=()=>{ setTab('design'); show('make'); makeCoin.show(); };
+
+/* ---------- collection ---------- */
+function setCollTab(t){ state.collTab=t; const m=t==='mine'; $('#tabMine').classList.toggle('on',m); $('#tabAll').classList.toggle('on',!m); $('#tabMine').setAttribute('aria-selected',m); $('#tabAll').setAttribute('aria-selected',!m); renderGrid(); }
+$('#tabMine').onclick=()=>setCollTab('mine'); $('#tabAll').onclick=()=>setCollTab('all');
+$('#collBack').onclick=()=>show('home');
+function renderGrid(){
+  const grid=$('#grid'); grid.innerHTML='';
+  const mine = state.collTab==='mine';
+  const list = mine ? state.coins.filter(isMine) : state.coins;
+  $('#bookCount').textContent = mine ? `${list.length} tossed` : `${list.length} in the water`;
+  if (!state.loaded){ grid.innerHTML='<p class="empty"><span class="hand">Fishing coins out of the water…</span></p>'; return; }
+  if (!list.length){
+    const p=document.createElement('p'); p.className='empty';
+    p.innerHTML = mine ? '<span class="hand">No coins yet</span>Toss one into the fountain and it will show up here.' : '<span class="hand">The fountain is empty</span>Be the first to toss a coin.';
+    grid.appendChild(p);
+  }
+  list.forEach((c,i)=>{
+    const b=document.createElement('button'); b.className='pol';
+    b.style.setProperty('--tilt', ((hashStr(c.id)%7)-3)*.6+'deg');
+    b.setAttribute('aria-label',`Coin number ${c.n}, tossed ${fmtDate(c.createdAt)}`);
+    b.innerHTML=`<span class="photo"><img alt="" src="${coinURL(c.design,'front',0,0,200)}"></span><span class="cap">${fmtDate(c.createdAt)}</span>${c.example?'<span class="badge">Example</span>':''}`;
+    b.onclick=()=>openView(c); grid.appendChild(b);
+  });
+  if (mine){
+    const t=document.createElement('button'); t.className='pol throw';
+    t.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>throw more';
+    t.onclick=()=>{ setTab('design'); show('make'); makeCoin.show(); }; grid.appendChild(t);
+  }
+}
+
+/* ---------- view a coin ---------- */
+const viewCoin = Coin3D($('#viewCoin'), {auto:.25, start:-20});
+async function openView(c){
+  $('#viewTitle').textContent = 'Coin #'+c.n;
+  viewCoin.set(c.design, c.n, c.createdAt); viewCoin.show();
+  $('#viewDate').textContent = fmtDate(c.createdAt);
+  const mine = isMine(c), nEl=$('#viewNote');
+  $('#viewBy').textContent = c.example ? 'Example coin' : mine ? 'Your coin' : "A visitor's coin";
+  nEl.classList.remove('muted');
+  if (c.note){ nEl.textContent=c.note; }
+  else if (c.hidden){
+    if (mine){
+      let txt = c.privateNote || '';
+      if (!txt && state.mode==='shared' && state.myId){ try{ const s=await state.db.collection('data/users/'+state.myId).doc(c.id).get(); txt = s.exists ? s.data().note : ''; }catch{} }
+      if (!txt){ const loc=lsGet('drumheller-coins',[]).find(x=>x.id===c.id); txt=loc?.privateNote||''; }
+      nEl.textContent = txt || 'Your private wish.';
+      $('#viewBy').textContent = 'Your coin · wish visible only to you';
+    } else { nEl.textContent='This wish is private.'; nEl.classList.add('muted'); }
+  } else { nEl.textContent='Tossed without a note.'; nEl.classList.add('muted'); }
+  show('view');
+}
+$('#viewClose').onclick=()=>show(state.prev);
+document.addEventListener('keydown',e=>{ if(e.key==='Escape' && state.screen==='view') show(state.prev); });
+
+/* ---------- boot ---------- */
+let last=performance.now();
+function frame(now){ const dt=Math.min(.05,(now-last)/1000); last=now; tick(dt, now/1000); coins3d.forEach(c=>c.step()); requestAnimationFrame(frame); }
+new ResizeObserver(resize).observe(app);
+resize(); renderDesign(); show('start'); requestAnimationFrame(frame);
+document.fonts?.load('800 20px "Bricolage Grotesque"').then(()=>{ thumbCache.clear(); renderDesign(); if(state.screen==='coll') renderGrid(); }).catch(()=>{});
+initData();
+})();
+</script>
+
+</body>
+</html>
