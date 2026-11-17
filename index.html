@@ -77,6 +77,12 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .start-copy .hand{font-size:22px;color:var(--marker)}
 .start-copy h1{margin:0;font-family:var(--f-display);font-weight:800;font-size:30px;line-height:1.05;letter-spacing:-.015em;text-wrap:balance}
 .start-copy p{margin:0 0 6px;max-width:300px;opacity:.85;line-height:1.4}
+.start-copy .fine{font-size:12px;opacity:.75;margin:0}
+.pill.ghost{background:var(--glass);color:var(--white);border-color:var(--glass-line);box-shadow:none;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.view-switch{flex:0 0 auto;display:inline-flex;padding:3px;gap:2px;border-radius:999px;background:rgba(10,16,30,.5);border:1px solid var(--glass-line);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.view-switch button{display:inline-flex;align-items:center;gap:5px;border:0;border-radius:999px;padding:7px 11px;background:transparent;color:var(--white);font-weight:700;font-size:12.5px;white-space:nowrap}
+.view-switch button svg{width:15px;height:15px}
+.view-switch button[aria-pressed="true"]{background:var(--marker);color:var(--marker-ink)}
 .reticle{align-self:center;width:min(70vw,280px);aspect-ratio:1.6;position:relative}
 .reticle span{position:absolute;width:34px;height:34px;border:3px solid var(--marker)}
 .reticle span:nth-child(1){top:0;left:0;border-right:0;border-bottom:0;border-radius:10px 0 0 0}
@@ -205,7 +211,8 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
       <h1>Point your phone at the fountain</h1>
       <p>Your camera shows the real fountain, and your coin lands in the water. Nothing is recorded or saved.</p>
       <button class="pill solid wide" id="startCam">Start camera</button>
-      <button class="link-btn" id="startIllus">Use the illustrated fountain instead</button>
+      <button class="pill ghost wide" id="startIllus">Use the illustration</button>
+      <p class="fine">Not at the fountain, or no camera? The illustration works anywhere. You can switch at any time.</p>
     </div>
   </section>
 
@@ -213,10 +220,7 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
   <section class="screen" id="s-home" hidden>
     <header class="topbar">
       <div class="place"><span class="hand">you're at</span><b>Drumheller Fountain</b></div>
-      <button class="chip-btn" id="camBtn" aria-pressed="false">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
-        <span id="camLbl">Use camera</span>
-      </button>
+      <div class="view-switch"></div>
     </header>
     <p class="align-hint" id="alignHint" hidden>Drag the ring onto the fountain's basin. Pinch to resize it.</p>
     <p class="glint-hint" id="glintHint" hidden>Tap a glint in the water to read someone's wish</p>
@@ -272,8 +276,7 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
   <section class="screen" id="s-toss" hidden>
     <header class="topbar">
       <button class="icon-btn" id="tossBack" aria-label="Back to editing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
-      <span class="hand title-hand">aim for the water</span>
-      <span class="w42"></span>
+      <div class="view-switch"></div>
     </header>
     <div class="spacer"></div>
     <div class="toss-zone">
@@ -286,6 +289,7 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 
   <!-- DONE -->
   <section class="screen" id="s-done" hidden>
+    <header class="topbar"><span></span><div class="view-switch"></div></header>
     <div class="spacer"></div>
     <div class="card">
       <span class="hand splash">splash!</span>
@@ -736,12 +740,21 @@ async function startCamera(){
   setCamUI(); return state.camera;
 }
 function stopCamera(){ state.stream?.getTracks().forEach(t=>t.stop()); state.stream=null; state.camera=false; $('#cam').hidden=true; setCamUI(); }
+const CAM_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
+const ILL_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18l6-8 4 5 3-3 5 6z"/><circle cx="16.5" cy="6.5" r="2"/></svg>';
+document.querySelectorAll('.view-switch').forEach(sw => {
+  sw.setAttribute('role','group'); sw.setAttribute('aria-label','Fountain view');
+  sw.innerHTML = `<button data-view="camera" aria-pressed="false">${CAM_ICON}Camera</button><button data-view="illus" aria-pressed="true">${ILL_ICON}Illustration</button>`;
+  sw.addEventListener('click', async e => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.view==='camera' && !state.camera){ if (!(await startCamera())) toast(NO_CAM); }
+    if (b.dataset.view==='illus' && state.camera) stopCamera();
+  });
+});
 function setCamUI(){
-  $('#camLbl').textContent = state.camera ? 'Illustration' : 'Use camera';
-  $('#camBtn').setAttribute('aria-pressed', String(state.camera));
+  document.querySelectorAll('.view-switch button').forEach(b => b.setAttribute('aria-pressed', String((b.dataset.view==='camera') === state.camera)));
   refreshHome();
 }
-$('#camBtn').addEventListener('click', async () => { if (state.camera) stopCamera(); else if (!(await startCamera())) toast(NO_CAM); });
 $('#startCam').addEventListener('click', async () => { const ok = await startCamera(); show('home'); if (!ok) toast(NO_CAM); });
 $('#startIllus').addEventListener('click', () => show('home'));
 document.addEventListener('visibilitychange', () => { const v=$('#cam'); if (state.camera && !document.hidden) v.play().catch(()=>{}); });
