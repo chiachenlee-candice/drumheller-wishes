@@ -974,7 +974,7 @@ document.addEventListener('keydown',e=>{ if(e.key==='Escape' && state.screen==='
 let last=performance.now();
 function frame(now){ const dt=Math.min(.05,(now-last)/1000); last=now; tick(dt, now/1000); coins3d.forEach(c=>c.step()); requestAnimationFrame(frame); }
 new ResizeObserver(resize).observe(app);
-resize(); renderDesign(); show('start'); requestAnimationFrame(frame);
+resize(); renderDesign(); show('home'); requestAnimationFrame(frame);
 document.fonts?.load('800 20px "Bricolage Grotesque"').then(()=>{ thumbCache.clear(); renderDesign(); if(state.screen==='coll') renderGrid(); }).catch(()=>{});
 initData();
 })();
