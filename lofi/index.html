@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#ffffff">
+<title>Drumheller Wishes Wireframe</title>
+<style>
+:root{--ink:#111;--mid:#777;--line:#bbb;--fill:#eee;--paper:#fff}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--paper);color:var(--ink);font:16px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;overflow:hidden;overscroll-behavior:none;-webkit-user-select:none;user-select:none}
+[hidden]{display:none!important}
+button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+
+/* background: camera or placeholder */
+#cam{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(.9) brightness(1.05)}
+#ph{position:fixed;inset:0;background:var(--fill)}
+#ph svg{position:absolute;inset:0;width:100%;height:100%}
+#ph span{position:absolute;left:50%;top:22%;transform:translateX(-50%);font-size:12px;letter-spacing:.12em;color:var(--mid);background:var(--fill);padding:2px 8px}
+
+/* fountain basin marker */
+#basin{position:fixed;left:50%;top:50%;width:min(84vw,420px);aspect-ratio:2.6;transform:translate(-50%,-50%);border:2px dashed var(--ink);border-radius:50%;background:rgba(255,255,255,.35)}
+#basin>.tag{position:absolute;left:50%;top:-26px;transform:translateX(-50%);font-size:12px;background:var(--paper);border:1px solid var(--ink);padding:1px 6px;white-space:nowrap}
+.dot{position:absolute;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;border:2px solid var(--ink);background:var(--paper);font-size:11px;font-weight:700;display:grid;place-items:center;padding:0}
+.dot.mine{background:var(--ink);color:var(--paper)}
+.dot.sel{outline:3px solid var(--ink);outline-offset:3px}
+
+/* chrome */
+.screen{position:fixed;inset:0;display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top) + 12px) 16px calc(env(safe-area-inset-bottom) + 16px);pointer-events:none}
+.screen>*{pointer-events:auto}
+.top{display:flex;align-items:center;gap:8px}
+.title{flex:1;background:var(--paper);border:2px solid var(--ink);padding:6px 10px;font-weight:700}
+.title small{display:block;font-weight:400;font-size:12px;color:var(--mid)}
+.btn{border:2px solid var(--ink);background:var(--paper);padding:12px 14px;font-weight:700;border-radius:0}
+.btn.primary{background:var(--ink);color:var(--paper)}
+.btn.sm{padding:6px 10px;font-size:14px;font-weight:600}
+.spacer{flex:1;pointer-events:none}
+.stack{display:flex;flex-direction:column;gap:10px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.panel{background:var(--paper);border:2px solid var(--ink);padding:14px}
+.lbl{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mid);margin:0 0 6px}
+.opts{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.opt{border:2px solid var(--line);background:var(--paper);padding:6px 10px;font-size:14px}
+.opt[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--paper)}
+input,textarea{font:inherit;width:100%;border:2px solid var(--ink);padding:8px;border-radius:0;background:var(--paper)}
+textarea{height:96px;resize:none}
+.note{font-size:13px;color:var(--mid);margin:6px 0 0}
+.steps{font-size:12px;color:var(--mid);text-align:center;margin:4px 0 8px}
+
+/* coin wireframe */
+.coin{width:150px;height:150px;border-radius:50%;border:3px solid var(--ink);background:var(--paper);display:grid;place-items:center;text-align:center;margin:0 auto 12px;position:relative}
+.coin.c-gold{box-shadow:inset 0 0 0 10px #ddd}
+.coin.c-silver{box-shadow:inset 0 0 0 10px #f2f2f2}
+.coin.c-copper{box-shadow:inset 0 0 0 10px #c8c8c8}
+.coin b{font-size:28px;display:block}
+.coin i{font-style:normal;font-size:12px;color:var(--mid)}
+
+/* toss */
+#tossCoin{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 70px);transform:translateX(-50%);touch-action:none;margin:0;width:120px;height:120px;transition:none;pointer-events:auto;z-index:5}
+#tossCoin b{font-size:22px}
+#tossCoin.flying{transition:transform .7s cubic-bezier(.3,.6,.4,1),opacity .7s}
+.hint{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 200px);transform:translateX(-50%);text-align:center;font-weight:700;background:var(--paper);border:2px solid var(--ink);padding:6px 12px;white-space:nowrap}
+.hint .arrow{display:block;font-size:22px;line-height:1}
+
+/* wish card */
+.card{background:var(--paper);border:2px solid var(--ink);padding:14px}
+.card h3{margin:0 0 4px;font-size:18px}
+.card p{margin:0}
+.card .meta{font-size:12px;color:var(--mid);margin-top:8px}
+
+#toast{position:fixed;left:50%;top:18%;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:8px 14px;font-size:14px;z-index:9;max-width:86vw;text-align:center}
+.badge{position:fixed;right:6px;bottom:calc(env(safe-area-inset-bottom) + 2px);font-size:10px;color:var(--mid);letter-spacing:.1em;pointer-events:none;z-index:1}
+</style>
+</head>
+<body>
+
+<video id="cam" playsinline muted autoplay hidden></video>
+<div id="ph">
+  <svg preserveAspectRatio="none" viewBox="0 0 100 100"><line x1="0" y1="0" x2="100" y2="100" stroke="#ccc" stroke-width=".3"/><line x1="100" y1="0" x2="0" y2="100" stroke="#ccc" stroke-width=".3"/></svg>
+  <span>CAMERA VIEW</span>
+</div>
+<div id="basin"><span class="tag">Fountain basin</span><div id="dots"></div></div>
+
+<!-- 1. HOME -->
+<section class="screen" id="s-home">
+  <div class="top">
+    <div class="title"><small>Welcome to</small>Drumheller Fountain</div>
+    <button class="btn sm camBtn">Camera</button>
+  </div>
+  <div class="spacer"></div>
+  <div class="stack">
+    <button class="btn primary" data-go="design">Make a wish coin</button>
+    <button class="btn" data-go="wishes">See everyone's wishes</button>
+  </div>
+</section>
+
+<!-- 2a. DESIGN COIN -->
+<section class="screen" id="s-design" hidden>
+  <div class="top"><button class="btn sm" data-go="home">← Back</button><div class="title">Design your coin</div></div>
+  <div class="spacer"></div>
+  <div class="panel">
+    <div class="steps">Step 1 of 2</div>
+    <div class="coin" id="coinPreview"><div><b id="pvInit">?</b><i id="pvPat">Star</i></div></div>
+    <p class="lbl">Color</p>
+    <div class="opts" id="colorOpts"></div>
+    <p class="lbl">Pattern</p>
+    <div class="opts" id="patOpts"></div>
+    <p class="lbl"><label for="initials">Initials</label></p>
+    <input id="initials" maxlength="3" autocomplete="off" placeholder="ABC">
+  </div>
+  <div style="height:10px"></div>
+  <button class="btn primary" id="toWish">Next: write a wish →</button>
+</section>
+
+<!-- 2b. WRITE WISH -->
+<section class="screen" id="s-wish" hidden>
+  <div class="top"><button class="btn sm" data-go="design">← Back</button><div class="title">Write your wish</div></div>
+  <div class="spacer"></div>
+  <div class="panel">
+    <div class="steps">Step 2 of 2</div>
+    <p class="lbl"><label for="wishText">Your wish</label></p>
+    <textarea id="wishText" maxlength="140" placeholder="I wish…"></textarea>
+    <label style="display:flex;gap:8px;align-items:center;margin-top:10px;font-size:14px"><input type="checkbox" id="priv" style="width:auto"> Keep my wish private (others only see my coin)</label>
+  </div>
+  <div style="height:10px"></div>
+  <button class="btn primary" id="toToss">Done → go toss it</button>
+</section>
+
+<!-- 3. TOSS -->
+<section class="screen" id="s-toss" hidden>
+  <div class="top"><button class="btn sm" data-go="wish">← Back</button><div class="title">Toss your coin</div><button class="btn sm camBtn">Camera</button></div>
+  <div class="spacer"></div>
+</section>
+<div class="hint" id="tossHint" hidden><span class="arrow">↑</span>Swipe up to toss</div>
+<div class="coin" id="tossCoin" hidden><div><b id="tcInit">?</b><i id="tcPat"></i></div></div>
+
+<!-- 3b. DONE -->
+<section class="screen" id="s-done" hidden>
+  <div class="top"><div class="title">Your coin is in the fountain!</div></div>
+  <div class="spacer"></div>
+  <div class="stack">
+    <button class="btn primary" data-go="wishes">See everyone's wishes</button>
+    <div class="row2"><button class="btn" data-go="design" data-new>Make another</button><button class="btn" data-go="home">Home</button></div>
+  </div>
+</section>
+
+<!-- 4. WISHES -->
+<section class="screen" id="s-wishes" hidden>
+  <div class="top"><button class="btn sm" data-go="home">← Home</button><div class="title">Wishes in the fountain<small>Tap a coin to read its wish</small></div></div>
+  <div class="spacer"></div>
+  <div class="card" id="wishCard"><p class="note" style="margin:0">● = your coin &nbsp; ○ = other visitors</p></div>
+</section>
+
+<div id="toast" hidden></div>
+<div class="badge">LO-FI WIREFRAME</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const COLORS = ['Gold','Silver','Copper'];
+const PATTERNS = ['Star','Heart','Leaf','Wave'];
+const SAMPLES = [
+  {id:'s1',pos:{x:.22,y:.45},init:'MK',color:'Gold',pat:'Star',wish:'Pass my qualifying exam this spring.',date:'Nov 12'},
+  {id:'s2',pos:{x:.40,y:.28},init:'JL',color:'Silver',pat:'Heart',wish:'That my grandma gets to visit Seattle next year.',date:'Nov 10'},
+  {id:'s3',pos:{x:.62,y:.30},init:'AR',color:'Copper',pat:'Leaf',wish:'',priv:true,date:'Nov 9'},
+  {id:'s4',pos:{x:.78,y:.52},init:'TS',color:'Gold',pat:'Wave',wish:'Find a summer internship I actually love.',date:'Nov 7'},
+  {id:'s5',pos:{x:.55,y:.72},init:'DN',color:'Silver',pat:'Star',wish:'Clear skies so we can see Mt. Rainier at graduation.',date:'Nov 3'},
+];
+let mine = [];
+try { mine = JSON.parse(localStorage.getItem('lofi-coins')) || []; } catch(e) {}
+const save = () => { try { localStorage.setItem('lofi-coins', JSON.stringify(mine)); } catch(e) {} };
+
+const draft = {color:'Gold', pat:'Star', init:'', wish:'', priv:false};
+
+/* ---------- screens ---------- */
+let cur = 'home';
+function show(name){
+  document.querySelectorAll('.screen').forEach(s => s.hidden = s.id !== 's-'+name);
+  cur = name; $('#toast').hidden = true;
+  const tossing = name === 'toss';
+  $('#tossCoin').hidden = !tossing; $('#tossHint').hidden = !tossing;
+  if (tossing) resetToss();
+  $('#basin').style.display = (name==='design' || name==='wish') ? 'none' : '';
+  renderDots(name === 'wishes' || name === 'done');
+  if (name === 'wishes') selectCoin(null);
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-go]'); if (!b) return;
+  if (b.hasAttribute('data-new')) { draft.init=''; draft.wish=''; draft.priv=false; $('#initials').value=''; $('#wishText').value=''; $('#priv').checked=false; renderDesign(); }
+  show(b.dataset.go);
+});
+
+/* ---------- design ---------- */
+function opts(el, list, key){
+  el.innerHTML = list.map(v => `<button class="opt" aria-pressed="${draft[key]===v}" data-v="${v}">${v}</button>`).join('');
+  el.onclick = e => { const b = e.target.closest('.opt'); if (!b) return; draft[key] = b.dataset.v; renderDesign(); };
+}
+function renderDesign(){
+  opts($('#colorOpts'), COLORS, 'color'); opts($('#patOpts'), PATTERNS, 'pat');
+  $('#coinPreview').className = 'coin c-' + draft.color.toLowerCase();
+  $('#pvInit').textContent = draft.init || '?'; $('#pvPat').textContent = draft.color + ' · ' + draft.pat;
+}
+$('#initials').addEventListener('input', e => { draft.init = e.target.value.toUpperCase().replace(/[^A-Z]/g,''); e.target.value = draft.init; renderDesign(); });
+$('#toWish').onclick = () => { if (!draft.init) { toast('Add your initials first'); $('#initials').focus(); return; } show('wish'); };
+$('#toToss').onclick = () => {
+  draft.wish = $('#wishText').value.trim(); draft.priv = $('#priv').checked;
+  if (!draft.wish) { toast('Write a wish first'); $('#wishText').focus(); return; }
+  show('toss');
+};
+
+/* ---------- toss (swipe up) ---------- */
+const tc = $('#tossCoin');
+let drag = null, tossed = false;
+function resetToss(){
+  tossed = false; tc.classList.remove('flying'); tc.style.transform = 'translateX(-50%)'; tc.style.opacity = 1;
+  tc.className = 'coin c-' + draft.color.toLowerCase();
+  $('#tcInit').textContent = draft.init; $('#tcPat').textContent = draft.pat;
+}
+tc.addEventListener('pointerdown', e => { if (tossed) return; tc.setPointerCapture(e.pointerId); drag = {y:e.clientY, x:e.clientX, t:performance.now(), dy:0, dx:0}; });
+tc.addEventListener('pointermove', e => {
+  if (!drag) return; drag.dy = e.clientY - drag.y; drag.dx = e.clientX - drag.x;
+  tc.style.transform = `translate(calc(-50% + ${drag.dx*.3}px), ${Math.min(0, drag.dy)}px)`;
+});
+tc.addEventListener('pointerup', end); tc.addEventListener('pointercancel', end);
+function end(){
+  if (!drag) return; const d = drag; drag = null;
+  const v = -d.dy / Math.max(1, performance.now() - d.t);
+  if (d.dy < -90 || (d.dy < -30 && v > .5)) return toss();
+  tc.style.transform = 'translateX(-50%)';
+  if (Math.abs(d.dy) < 10) toast('Swipe up on the coin to toss it');
+}
+function toss(){
+  tossed = true; $('#tossHint').hidden = true;
+  const r = $('#basin').getBoundingClientRect(), c = tc.getBoundingClientRect();
+  let pos, tries = 0;
+  do { pos = {x:.18 + Math.random()*.64, y:.25 + Math.random()*.5}; }
+  while (tries++ < 60 && all().some(c => { const q = c.pos || posFor(c.id); return Math.hypot((q.x-pos.x)*2.6, q.y-pos.y) < .32; }));
+  const tx = r.left + r.width*pos.x - (c.left + c.width/2), ty = r.top + r.height*pos.y - (c.top + c.height/2);
+  tc.classList.add('flying');
+  tc.style.transform = `translate(calc(-50% + ${tx}px), ${ty}px) scale(.2)`;
+  tc.style.opacity = .3;
+  mine.push({id:'m'+Date.now(), init:draft.init, color:draft.color, pat:draft.pat, wish:draft.wish, priv:draft.priv, date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'}), pos, mine:true});
+  save();
+  setTimeout(() => show('done'), 750);
+}
+
+/* ---------- wishes ---------- */
+function posFor(id){ let h=0; for (const ch of id) h = (h*31 + ch.charCodeAt(0)) >>> 0;
+  const a = (h % 360) * Math.PI/180, rr = .15 + ((h>>9) % 100)/100*.3; return {x:.5 + Math.cos(a)*rr, y:.5 + Math.sin(a)*rr*.9}; }
+function all(){ return [...SAMPLES, ...mine]; }
+function renderDots(on){
+  const box = $('#dots'); if (!on) { box.innerHTML=''; return; }
+  box.innerHTML = all().map(c => { const p = c.pos || posFor(c.id);
+    return `<button class="dot${c.mine?' mine':''}" data-id="${c.id}" style="left:${p.x*100}%;top:${p.y*100}%" aria-label="Coin ${c.init}">${c.init}</button>`; }).join('');
+}
+$('#dots').addEventListener('click', e => { const d = e.target.closest('.dot'); if (!d || cur!=='wishes') return; selectCoin(d.dataset.id); });
+function selectCoin(id){
+  document.querySelectorAll('.dot').forEach(d => d.classList.toggle('sel', d.dataset.id === id));
+  const c = all().find(x => x.id === id), card = $('#wishCard');
+  if (!c) { card.innerHTML = `<p class="note" style="margin:0">● = your coin &nbsp; ○ = other visitors · ${all().length} coins</p>`; return; }
+  const esc = s => s.replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+  card.innerHTML = `<h3>${esc(c.init)}'s coin${c.mine?' (yours)':''}</h3>
+    <p>${c.priv && !c.mine ? '<i>This wish is private.</i>' : '“'+esc(c.wish)+'”'}</p>
+    <p class="meta">${c.color} · ${c.pat} · tossed ${c.date}${c.mine && c.priv ? ' · private' : ''}</p>`;
+}
+
+/* ---------- camera ---------- */
+let stream = null;
+async function camOn(){
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}, audio:false});
+    const v = $('#cam'); v.srcObject = stream; v.hidden = false; $('#ph').hidden = true; await v.play().catch(()=>{});
+  } catch(e) { stream = null; toast('Camera not available. Using the placeholder view.'); }
+  camLabel();
+}
+function camOff(){ if (stream) stream.getTracks().forEach(t => t.stop()); stream = null; $('#cam').hidden = true; $('#ph').hidden = false; camLabel(); }
+function camLabel(){ document.querySelectorAll('.camBtn').forEach(b => b.textContent = stream ? 'Camera: on' : 'Camera: off'); }
+document.querySelectorAll('.camBtn').forEach(b => b.onclick = () => stream ? camOff() : camOn());
+
+let tt; function toast(m){ const t=$('#toast'); t.textContent=m; t.hidden=false; clearTimeout(tt); tt=setTimeout(()=>t.hidden=true, 2200); }
+
+renderDesign(); camLabel(); show('home');
+if (new URLSearchParams(location.search).has('nocam')) {} else camOn();
+</script>
+</body>
+</html>
