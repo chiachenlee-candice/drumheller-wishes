@@ -12,4 +12,4 @@ Live: https://chiachenlee-candice.github.io/drumheller-wishes/
 
 - **High-fidelity AR prototype** (git tag `v1-hifi`): https://chiachenlee-candice.github.io/drumheller-wishes/
 - **Lo-fi wireframe for usability testing** (`lofi/`): https://chiachenlee-candice.github.io/drumheller-wishes/lofi/
-  Grayscale boxes only. It keeps the live camera and the real swipe-up gesture, which paper can't simulate, and tests three tasks: design a coin and write a wish, toss it, and find another visitor's wish. Add `?nocam` to the URL to use the placeholder instead of the camera.
+  Grayscale boxes only. It keeps the live camera and the real swipe-up gesture, which paper can't simulate, and tests three tasks: sign or draw on a coin with your finger and write a wish, toss it, and find another visitor's wish. Add `?nocam` to the URL to use the placeholder instead of the camera.

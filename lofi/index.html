@@ -21,8 +21,10 @@ button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:tra
 /* fountain basin marker */
 #basin{position:fixed;left:50%;top:50%;width:min(84vw,420px);aspect-ratio:2.6;transform:translate(-50%,-50%);border:2px dashed var(--ink);border-radius:50%;background:rgba(255,255,255,.35)}
 #basin>.tag{position:absolute;left:50%;top:-26px;transform:translateX(-50%);font-size:12px;background:var(--paper);border:1px solid var(--ink);padding:1px 6px;white-space:nowrap}
-.dot{position:absolute;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;border:2px solid var(--ink);background:var(--paper);font-size:11px;font-weight:700;display:grid;place-items:center;padding:0}
-.dot.mine{background:var(--ink);color:var(--paper)}
+.dot{position:absolute;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;border:2px solid var(--ink);background:var(--paper);padding:0}
+.dot img{width:100%;height:100%;border-radius:50%;display:block;pointer-events:none}
+.dot.mine{border-width:4px}
+.dot.mine::after{content:"You";position:absolute;left:50%;top:-17px;transform:translateX(-50%);font-size:10px;font-weight:700;background:var(--ink);color:var(--paper);padding:0 4px}
 .dot.sel{outline:3px solid var(--ink);outline-offset:3px}
 
 /* chrome */
@@ -49,15 +51,15 @@ textarea{height:96px;resize:none}
 
 /* coin wireframe */
 .coin{width:150px;height:150px;border-radius:50%;border:3px solid var(--ink);background:var(--paper);display:grid;place-items:center;text-align:center;margin:0 auto 12px;position:relative}
-.coin.c-gold{box-shadow:inset 0 0 0 10px #ddd}
-.coin.c-silver{box-shadow:inset 0 0 0 10px #f2f2f2}
-.coin.c-copper{box-shadow:inset 0 0 0 10px #c8c8c8}
-.coin b{font-size:28px;display:block}
-.coin i{font-style:normal;font-size:12px;color:var(--mid)}
+.coin img{width:100%;height:100%;border-radius:50%;display:block;pointer-events:none}
+.pad{width:min(68vw,280px);height:auto;aspect-ratio:1;touch-action:none;cursor:crosshair;display:block;padding:0}
+.signhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.signhead span{font-weight:700;font-size:18px}
+.card.has-coin{display:flex;gap:12px;align-items:flex-start}
+.card .thumb{flex:0 0 64px;height:64px;border-radius:50%;border:2px solid var(--ink)}
 
 /* toss */
 #tossCoin{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 70px);transform:translateX(-50%);touch-action:none;margin:0;width:120px;height:120px;transition:none;pointer-events:auto;z-index:5}
-#tossCoin b{font-size:22px}
 #tossCoin.flying{transition:transform .7s cubic-bezier(.3,.6,.4,1),opacity .7s}
 .hint{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 200px);transform:translateX(-50%);text-align:center;font-weight:700;background:var(--paper);border:2px solid var(--ink);padding:6px 12px;white-space:nowrap}
 .hint .arrow{display:block;font-size:22px;line-height:1}
@@ -94,22 +96,18 @@ textarea{height:96px;resize:none}
   </div>
 </section>
 
-<!-- 2a. DESIGN COIN -->
+<!-- 2a. DESIGN COIN: draw / sign -->
 <section class="screen" id="s-design" hidden>
-  <div class="top"><button class="btn sm" data-go="home">← Back</button><div class="title">Design your coin</div></div>
+  <div class="top"><button class="btn sm" data-go="home">← Back</button><div class="title">Design coin</div></div>
   <div class="spacer"></div>
   <div class="panel">
     <div class="steps">Step 1 of 2</div>
-    <div class="coin" id="coinPreview"><div><b id="pvInit">?</b><i id="pvPat">Star</i></div></div>
-    <p class="lbl">Color</p>
-    <div class="opts" id="colorOpts"></div>
-    <p class="lbl">Pattern</p>
-    <div class="opts" id="patOpts"></div>
-    <p class="lbl"><label for="initials">Initials</label></p>
-    <input id="initials" maxlength="3" autocomplete="off" placeholder="ABC">
+    <div class="signhead"><span>Sign the coin!</span><button class="btn sm" id="clearPad">Clear</button></div>
+    <canvas id="pad" class="coin pad" width="480" height="480" aria-label="Your coin. Draw or sign on it with your finger."></canvas>
+    <p class="note" style="text-align:center">Draw or sign with your finger</p>
   </div>
   <div style="height:10px"></div>
-  <button class="btn primary" id="toWish">Next: write a wish →</button>
+  <button class="btn primary" id="toWish">Next →</button>
 </section>
 
 <!-- 2b. WRITE WISH -->
@@ -132,7 +130,7 @@ textarea{height:96px;resize:none}
   <div class="spacer"></div>
 </section>
 <div class="hint" id="tossHint" hidden><span class="arrow">↑</span>Swipe up to toss</div>
-<div class="coin" id="tossCoin" hidden><div><b id="tcInit">?</b><i id="tcPat"></i></div></div>
+<div class="coin" id="tossCoin" hidden><img id="tcImg" alt="Your coin"></div>
 
 <!-- 3b. DONE -->
 <section class="screen" id="s-done" hidden>
@@ -148,7 +146,7 @@ textarea{height:96px;resize:none}
 <section class="screen" id="s-wishes" hidden>
   <div class="top"><button class="btn sm" data-go="home">← Home</button><div class="title">Wishes in the fountain<small>Tap a coin to read its wish</small></div></div>
   <div class="spacer"></div>
-  <div class="card" id="wishCard"><p class="note" style="margin:0">● = your coin &nbsp; ○ = other visitors</p></div>
+  <div class="card" id="wishCard"></div>
 </section>
 
 <div id="toast" hidden></div>
@@ -156,20 +154,32 @@ textarea{height:96px;resize:none}
 
 <script>
 const $ = s => document.querySelector(s);
-const COLORS = ['Gold','Silver','Copper'];
-const PATTERNS = ['Star','Heart','Leaf','Wave'];
 const SAMPLES = [
-  {id:'s1',pos:{x:.22,y:.45},init:'MK',color:'Gold',pat:'Star',wish:'Pass my qualifying exam this spring.',date:'Nov 12'},
-  {id:'s2',pos:{x:.40,y:.28},init:'JL',color:'Silver',pat:'Heart',wish:'That my grandma gets to visit Seattle next year.',date:'Nov 10'},
-  {id:'s3',pos:{x:.62,y:.30},init:'AR',color:'Copper',pat:'Leaf',wish:'',priv:true,date:'Nov 9'},
-  {id:'s4',pos:{x:.78,y:.52},init:'TS',color:'Gold',pat:'Wave',wish:'Find a summer internship I actually love.',date:'Nov 7'},
-  {id:'s5',pos:{x:.55,y:.72},init:'DN',color:'Silver',pat:'Star',wish:'Clear skies so we can see Mt. Rainier at graduation.',date:'Nov 3'},
+  {id:'s1',pos:{x:.22,y:.45},sig:'Mika',doodle:'star',wish:'Pass my qualifying exam this spring.',date:'Nov 12'},
+  {id:'s2',pos:{x:.40,y:.28},sig:'JL',doodle:'heart',wish:'That my grandma gets to visit Seattle next year.',date:'Nov 10'},
+  {id:'s3',pos:{x:.62,y:.30},sig:'Ari',doodle:'',wish:'',priv:true,date:'Nov 9'},
+  {id:'s4',pos:{x:.78,y:.52},sig:'T.S.',doodle:'smile',wish:'Find a summer internship I actually love.',date:'Nov 7'},
+  {id:'s5',pos:{x:.55,y:.72},sig:'Dan',doodle:'mountain',wish:'Clear skies so we can see Mt. Rainier at graduation.',date:'Nov 3'},
 ];
+// Sample coins look hand-signed: a cursive name plus a quick doodle.
+function sampleImg(c){
+  const S=240, cv=document.createElement('canvas'); cv.width=cv.height=S; const g=cv.getContext('2d');
+  g.fillStyle='#fff'; g.fillRect(0,0,S,S); g.strokeStyle=g.fillStyle='#111'; g.lineWidth=5; g.lineCap=g.lineJoin='round';
+  g.font='italic 42px "Bradley Hand","Segoe Print","Comic Sans MS",cursive'; g.textAlign='center'; g.textBaseline='middle';
+  g.fillText(c.sig, S/2, c.doodle ? S*.66 : S/2);
+  const x=S/2, y=S*.32; g.beginPath();
+  if (c.doodle==='star'){ for(let i=0;i<10;i++){const r=i%2?14:34,a=-Math.PI/2+i*Math.PI/5; g.lineTo(x+Math.cos(a)*r,y+Math.sin(a)*r);} g.closePath(); }
+  if (c.doodle==='heart'){ g.moveTo(x,y+28); g.bezierCurveTo(x-48,y-4,x-24,y-38,x,y-14); g.bezierCurveTo(x+24,y-38,x+48,y-4,x,y+28); }
+  if (c.doodle==='smile'){ g.arc(x,y,30,0,Math.PI*2); g.moveTo(x-16,y+6); g.quadraticCurveTo(x,y+22,x+16,y+6); g.moveTo(x-10,y-8); g.arc(x-10,y-8,1,0,7); g.moveTo(x+10,y-8); g.arc(x+10,y-8,1,0,7); }
+  if (c.doodle==='mountain'){ g.moveTo(x-50,y+24); g.lineTo(x-8,y-26); g.lineTo(x+14,y); g.lineTo(x+26,y-12); g.lineTo(x+52,y+24); }
+  g.stroke(); return cv.toDataURL();
+}
+SAMPLES.forEach(c => c.img = sampleImg(c));
 let mine = [];
-try { mine = JSON.parse(localStorage.getItem('lofi-coins')) || []; } catch(e) {}
-const save = () => { try { localStorage.setItem('lofi-coins', JSON.stringify(mine)); } catch(e) {} };
+try { mine = JSON.parse(localStorage.getItem('lofi-coins-v2')) || []; } catch(e) {}
+const save = () => { try { localStorage.setItem('lofi-coins-v2', JSON.stringify(mine)); } catch(e) {} };
 
-const draft = {color:'Gold', pat:'Star', init:'', wish:'', priv:false};
+const draft = {img:'', wish:'', priv:false};
 
 /* ---------- screens ---------- */
 let cur = 'home';
@@ -185,22 +195,24 @@ function show(name){
 }
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-go]'); if (!b) return;
-  if (b.hasAttribute('data-new')) { draft.init=''; draft.wish=''; draft.priv=false; $('#initials').value=''; $('#wishText').value=''; $('#priv').checked=false; renderDesign(); }
+  if (b.hasAttribute('data-new')) { draft.img=''; draft.wish=''; draft.priv=false; $('#wishText').value=''; $('#priv').checked=false; clearPad(); }
   show(b.dataset.go);
 });
 
-/* ---------- design ---------- */
-function opts(el, list, key){
-  el.innerHTML = list.map(v => `<button class="opt" aria-pressed="${draft[key]===v}" data-v="${v}">${v}</button>`).join('');
-  el.onclick = e => { const b = e.target.closest('.opt'); if (!b) return; draft[key] = b.dataset.v; renderDesign(); };
-}
-function renderDesign(){
-  opts($('#colorOpts'), COLORS, 'color'); opts($('#patOpts'), PATTERNS, 'pat');
-  $('#coinPreview').className = 'coin c-' + draft.color.toLowerCase();
-  $('#pvInit').textContent = draft.init || '?'; $('#pvPat').textContent = draft.color + ' · ' + draft.pat;
-}
-$('#initials').addEventListener('input', e => { draft.init = e.target.value.toUpperCase().replace(/[^A-Z]/g,''); e.target.value = draft.init; renderDesign(); });
-$('#toWish').onclick = () => { if (!draft.init) { toast('Add your initials first'); $('#initials').focus(); return; } show('wish'); };
+/* ---------- design: draw on the coin ---------- */
+const pad = $('#pad'), pg = pad.getContext('2d');
+let inked = false, stroke = null;
+function clearPad(){ pg.fillStyle='#fff'; pg.fillRect(0,0,pad.width,pad.height); inked=false; }
+function padXY(e){ const r=pad.getBoundingClientRect(); return [(e.clientX-r.left)*pad.width/r.width, (e.clientY-r.top)*pad.height/r.height]; }
+pad.addEventListener('pointerdown', e => { e.preventDefault(); pad.setPointerCapture(e.pointerId); stroke = padXY(e);
+  pg.fillStyle='#111'; pg.beginPath(); pg.arc(stroke[0],stroke[1],5,0,Math.PI*2); pg.fill(); inked = true; });
+pad.addEventListener('pointermove', e => { if (!stroke) return; const p = padXY(e);
+  pg.strokeStyle='#111'; pg.lineWidth=10; pg.lineCap=pg.lineJoin='round';
+  pg.beginPath(); pg.moveTo(stroke[0],stroke[1]); pg.lineTo(p[0],p[1]); pg.stroke(); stroke = p; });
+['pointerup','pointercancel','pointerleave'].forEach(t => pad.addEventListener(t, () => stroke = null));
+$('#clearPad').onclick = clearPad;
+function padImage(){ const c=document.createElement('canvas'); c.width=c.height=240; c.getContext('2d').drawImage(pad,0,0,240,240); return c.toDataURL(); }
+$('#toWish').onclick = () => { if (!inked) { toast('Sign or draw on the coin first'); return; } draft.img = padImage(); show('wish'); };
 $('#toToss').onclick = () => {
   draft.wish = $('#wishText').value.trim(); draft.priv = $('#priv').checked;
   if (!draft.wish) { toast('Write a wish first'); $('#wishText').focus(); return; }
@@ -212,8 +224,7 @@ const tc = $('#tossCoin');
 let drag = null, tossed = false;
 function resetToss(){
   tossed = false; tc.classList.remove('flying'); tc.style.transform = 'translateX(-50%)'; tc.style.opacity = 1;
-  tc.className = 'coin c-' + draft.color.toLowerCase();
-  $('#tcInit').textContent = draft.init; $('#tcPat').textContent = draft.pat;
+  $('#tcImg').src = draft.img;
 }
 tc.addEventListener('pointerdown', e => { if (tossed) return; tc.setPointerCapture(e.pointerId); drag = {y:e.clientY, x:e.clientX, t:performance.now(), dy:0, dx:0}; });
 tc.addEventListener('pointermove', e => {
@@ -238,7 +249,7 @@ function toss(){
   tc.classList.add('flying');
   tc.style.transform = `translate(calc(-50% + ${tx}px), ${ty}px) scale(.2)`;
   tc.style.opacity = .3;
-  mine.push({id:'m'+Date.now(), init:draft.init, color:draft.color, pat:draft.pat, wish:draft.wish, priv:draft.priv, date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'}), pos, mine:true});
+  mine.push({id:'m'+Date.now(), img:draft.img, wish:draft.wish, priv:draft.priv, date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'}), pos, mine:true});
   save();
   setTimeout(() => show('done'), 750);
 }
@@ -250,17 +261,19 @@ function all(){ return [...SAMPLES, ...mine]; }
 function renderDots(on){
   const box = $('#dots'); if (!on) { box.innerHTML=''; return; }
   box.innerHTML = all().map(c => { const p = c.pos || posFor(c.id);
-    return `<button class="dot${c.mine?' mine':''}" data-id="${c.id}" style="left:${p.x*100}%;top:${p.y*100}%" aria-label="Coin ${c.init}">${c.init}</button>`; }).join('');
+    return `<button class="dot${c.mine?' mine':''}" data-id="${c.id}" style="left:${p.x*100}%;top:${p.y*100}%" aria-label="${c.mine?'Your coin':'A visitor\'s coin'}"><img src="${c.img}" alt=""></button>`; }).join('');
 }
 $('#dots').addEventListener('click', e => { const d = e.target.closest('.dot'); if (!d || cur!=='wishes') return; selectCoin(d.dataset.id); });
 function selectCoin(id){
   document.querySelectorAll('.dot').forEach(d => d.classList.toggle('sel', d.dataset.id === id));
   const c = all().find(x => x.id === id), card = $('#wishCard');
-  if (!c) { card.innerHTML = `<p class="note" style="margin:0">● = your coin &nbsp; ○ = other visitors · ${all().length} coins</p>`; return; }
+  card.classList.toggle('has-coin', !!c);
+  if (!c) { card.innerHTML = `<p class="note" style="margin:0">${all().length} coins in the fountain · coins marked “You” are yours</p>`; return; }
   const esc = s => s.replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
-  card.innerHTML = `<h3>${esc(c.init)}'s coin${c.mine?' (yours)':''}</h3>
+  card.innerHTML = `<img class="thumb" src="${c.img}" alt=""><div>
+    <h3>${c.mine ? 'Your coin' : 'A visitor\'s coin'}</h3>
     <p>${c.priv && !c.mine ? '<i>This wish is private.</i>' : '“'+esc(c.wish)+'”'}</p>
-    <p class="meta">${c.color} · ${c.pat} · tossed ${c.date}${c.mine && c.priv ? ' · private' : ''}</p>`;
+    <p class="meta">Tossed ${c.date}${c.mine && c.priv ? ' · private' : ''}</p></div>`;
 }
 
 /* ---------- camera ---------- */
@@ -278,7 +291,7 @@ document.querySelectorAll('.camBtn').forEach(b => b.onclick = () => stream ? cam
 
 let tt; function toast(m){ const t=$('#toast'); t.textContent=m; t.hidden=false; clearTimeout(tt); tt=setTimeout(()=>t.hidden=true, 2200); }
 
-renderDesign(); camLabel(); show('home');
+clearPad(); camLabel(); show('home');
 if (new URLSearchParams(location.search).has('nocam')) {} else camOn();
 </script>
 </body>
