@@ -12,141 +12,173 @@ html,body{margin:0;height:100%;background:var(--paper);color:var(--ink);font:16p
 [hidden]{display:none!important}
 button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
 
-/* background: camera or placeholder */
-#cam{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(.9) brightness(1.05)}
-#ph{position:fixed;inset:0;background:var(--fill)}
-#ph svg{position:absolute;inset:0;width:100%;height:100%}
-#ph span{position:absolute;left:50%;top:22%;transform:translateX(-50%);font-size:12px;letter-spacing:.12em;color:var(--mid);background:var(--fill);padding:2px 8px}
-
-/* fountain basin marker */
-#basin{position:fixed;left:50%;top:50%;width:min(84vw,420px);aspect-ratio:2.6;transform:translate(-50%,-50%);border:2px dashed var(--ink);border-radius:50%;background:rgba(255,255,255,.35)}
-#basin>.tag{position:absolute;left:50%;top:-26px;transform:translateX(-50%);font-size:12px;background:var(--paper);border:1px solid var(--ink);padding:1px 6px;white-space:nowrap}
-.dot{position:absolute;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;border:2px solid var(--ink);background:var(--paper);padding:0}
-.dot img{width:100%;height:100%;border-radius:50%;display:block;pointer-events:none}
-.dot.mine{border-width:4px}
-.dot.mine::after{content:"You";position:absolute;left:50%;top:-17px;transform:translateX(-50%);font-size:10px;font-weight:700;background:var(--ink);color:var(--paper);padding:0 4px}
-.dot.sel{outline:3px solid var(--ink);outline-offset:3px}
-
-/* chrome */
-.screen{position:fixed;inset:0;display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top) + 12px) 16px calc(env(safe-area-inset-bottom) + 16px);pointer-events:none}
-.screen>*{pointer-events:auto}
-.top{display:flex;align-items:center;gap:8px}
-.title{flex:1;background:var(--paper);border:2px solid var(--ink);padding:6px 10px;font-weight:700}
-.title small{display:block;font-weight:400;font-size:12px;color:var(--mid)}
+/* screens: plain white pages; only the toss screen shows the camera */
+.screen{position:fixed;inset:0;display:flex;flex-direction:column;gap:10px;background:var(--paper);padding:calc(env(safe-area-inset-top) + 12px) 16px calc(env(safe-area-inset-bottom) + 16px)}
+.screen.see-through{background:transparent;pointer-events:none}
+.screen.see-through>*{pointer-events:auto}
+.top{display:flex;align-items:center;gap:8px;min-height:40px}
+.title{flex:1;font-weight:800;font-size:20px;line-height:1.1}
+.title small{display:block;font-weight:400;font-size:13px;color:var(--mid)}
+.boxed{background:var(--paper);border:2px solid var(--ink);padding:6px 10px;font-size:17px}
 .btn{border:2px solid var(--ink);background:var(--paper);padding:12px 14px;font-weight:700;border-radius:0}
 .btn.primary{background:var(--ink);color:var(--paper)}
 .btn.sm{padding:6px 10px;font-size:14px;font-weight:600}
-.spacer{flex:1;pointer-events:none}
-.stack{display:flex;flex-direction:column;gap:10px}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.panel{background:var(--paper);border:2px solid var(--ink);padding:14px}
-.lbl{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mid);margin:0 0 6px}
-.opts{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
-.opt{border:2px solid var(--line);background:var(--paper);padding:6px 10px;font-size:14px}
-.opt[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--paper)}
-input,textarea{font:inherit;width:100%;border:2px solid var(--ink);padding:8px;border-radius:0;background:var(--paper)}
-textarea{height:96px;resize:none}
-.note{font-size:13px;color:var(--mid);margin:6px 0 0}
-.steps{font-size:12px;color:var(--mid);text-align:center;margin:4px 0 8px}
+.link{background:none;border:0;text-decoration:underline;text-underline-offset:3px;color:var(--ink);padding:8px;font-size:15px}
+.spacer{flex:1}
+.note{font-size:13px;color:var(--mid);margin:0;text-align:center}
+.center{display:flex;flex-direction:column;align-items:center;gap:10px}
 
-/* coin wireframe */
-.coin{width:150px;height:150px;border-radius:50%;border:3px solid var(--ink);background:var(--paper);display:grid;place-items:center;text-align:center;margin:0 auto 12px;position:relative}
-.coin img{width:100%;height:100%;border-radius:50%;display:block;pointer-events:none}
-.pad{width:min(68vw,280px);height:auto;aspect-ratio:1;touch-action:none;cursor:crosshair;display:block;padding:0}
-.signhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.signhead span{font-weight:700;font-size:18px}
-.card.has-coin{display:flex;gap:12px;align-items:flex-start}
-.card .thumb{flex:0 0 64px;height:64px;border-radius:50%;border:2px solid var(--ink)}
+/* line-art fountain (landing + toss fallback). Basin geometry is shared with JS. */
+.stage{position:relative;width:min(86vw,380px);aspect-ratio:300/260;margin:0 auto}
+.stage svg{position:absolute;inset:0;width:100%;height:100%}
+.stage svg *{fill:none;stroke:var(--ink);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.stage svg .thin{stroke-width:1.5;stroke:var(--mid)}
+#target{position:absolute;left:10%;width:80%;top:calc(178/260*100%);height:calc(44/260*100%);border:3px dashed #fff;border-radius:50%;box-shadow:0 0 0 2px rgba(0,0,0,.5),inset 0 0 0 2px rgba(0,0,0,.5)}
+#target span{position:absolute;left:50%;top:-30px;transform:translateX(-50%);white-space:nowrap;font-size:12px;background:var(--paper);border:1px solid var(--ink);padding:1px 6px}
+
+/* coins */
+.coin{border-radius:50%;border:3px solid var(--ink);background:var(--paper);display:block;overflow:hidden;padding:0}
+.coin img{width:100%;height:100%;display:block;pointer-events:none}
+.pad{width:min(70vw,280px);height:auto;aspect-ratio:1;touch-action:none;cursor:crosshair}
+.signhead{display:flex;justify-content:space-between;align-items:center;width:min(86vw,340px)}
+.signhead span{font-weight:700;font-size:20px}
+
+/* wish page: coin on top, lined message area below */
+.datechip{font-size:14px;color:var(--mid)}
+.bigcoin{width:min(46vw,200px);aspect-ratio:1;margin:4px auto 0}
+.lined{display:block;width:100%;flex:1;min-height:140px;max-height:260px;resize:none;border:0;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);padding:4px 2px;font:20px/36px "Bradley Hand","Segoe Print","Comic Sans MS",cursive;background:repeating-linear-gradient(transparent 0 35px,var(--line) 35px 36px);background-attachment:local;outline:none;-webkit-user-select:text;user-select:text;border-radius:0}
+.lined.read{white-space:pre-wrap;overflow:auto;margin:0;-webkit-user-select:text;user-select:text}
+.check{display:flex;gap:8px;align-items:center;font-size:14px}
+.check input{width:20px;height:20px;accent-color:var(--ink)}
 
 /* toss */
-#tossCoin{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 70px);transform:translateX(-50%);touch-action:none;margin:0;width:120px;height:120px;transition:none;pointer-events:auto;z-index:5}
-#tossCoin.flying{transition:transform .7s cubic-bezier(.3,.6,.4,1),opacity .7s}
-.hint{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 200px);transform:translateX(-50%);text-align:center;font-weight:700;background:var(--paper);border:2px solid var(--ink);padding:6px 12px;white-space:nowrap}
-.hint .arrow{display:block;font-size:22px;line-height:1}
+#cam{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(1)}
+#tossStage{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 70px);transform:translateX(-50%)}
+#tossCoin{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 60px);width:120px;height:120px;margin-left:-60px;touch-action:none;z-index:5;background:var(--paper)}
+#tossCoin.flying{transition:transform .65s cubic-bezier(.3,.6,.4,1)}
+.hint{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 196px);transform:translateX(-50%);text-align:center;font-weight:700;background:var(--paper);border:2px solid var(--ink);padding:6px 12px;white-space:nowrap;z-index:4}
+.hint b{display:block;font-size:22px;line-height:1}
+#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:6}
 
-/* wish card */
-.card{background:var(--paper);border:2px solid var(--ink);padding:14px}
-.card h3{margin:0 0 4px;font-size:18px}
-.card p{margin:0}
-.card .meta{font-size:12px;color:var(--mid);margin-top:8px}
+/* coin collection popup */
+#s-coll{top:auto;height:92%;border-top:2px solid var(--ink);box-shadow:0 -10px 40px rgba(0,0,0,.25);transform:translateY(0);transition:transform .35s ease;z-index:8}
+#s-coll.off{transform:translateY(105%)}
+.tabs{display:flex;flex:1;border:2px solid var(--ink);border-radius:999px;overflow:hidden}
+.tabs button{flex:1;border:0;background:var(--paper);padding:8px 6px;font-weight:700;font-size:15px}
+.tabs button+button{border-left:2px solid var(--ink)}
+.tabs button[aria-selected="true"]{background:var(--ink);color:var(--paper)}
+.banner{border:2px solid var(--ink);padding:8px 12px;font-weight:700;text-align:center}
+.grid{flex:1;overflow-y:auto;display:grid;grid-template-columns:1fr 1fr;gap:18px 16px;align-content:start;padding:6px 4px 20px}
+.cell{display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:0;padding:0}
+.cell .coin{width:100%;max-width:140px;aspect-ratio:1}
+.cell.new .coin{border-width:5px}
+.cell small{font-size:12px;color:var(--mid)}
+.cell small b{color:var(--ink)}
+.empty{grid-column:1/-1;text-align:center;color:var(--mid);padding:30px 0}
+#s-view{z-index:9}
 
-#toast{position:fixed;left:50%;top:18%;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:8px 14px;font-size:14px;z-index:9;max-width:86vw;text-align:center}
-.badge{position:fixed;right:6px;bottom:calc(env(safe-area-inset-bottom) + 2px);font-size:10px;color:var(--mid);letter-spacing:.1em;pointer-events:none;z-index:1}
+/* map */
+.loc{display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left;font-size:18px}
+.loc.here{border-width:4px}
+.loc small{font-size:12px;font-weight:600}
+
+#toast{position:fixed;left:50%;top:16%;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:8px 14px;font-size:14px;z-index:20;max-width:86vw;text-align:center}
+.badge{position:fixed;right:6px;bottom:calc(env(safe-area-inset-bottom) + 2px);font-size:10px;color:var(--mid);letter-spacing:.1em;pointer-events:none;z-index:30}
 </style>
 </head>
 <body>
 
-<video id="cam" playsinline muted autoplay hidden></video>
-<div id="ph">
-  <svg preserveAspectRatio="none" viewBox="0 0 100 100"><line x1="0" y1="0" x2="100" y2="100" stroke="#ccc" stroke-width=".3"/><line x1="100" y1="0" x2="0" y2="100" stroke="#ccc" stroke-width=".3"/></svg>
-  <span>CAMERA VIEW</span>
-</div>
-<div id="basin"><span class="tag">Fountain basin</span><div id="dots"></div></div>
+<template id="fountainArt">
+  <svg viewBox="0 0 300 260" aria-hidden="true">
+    <!-- spray -->
+    <path d="M150 150 V38"/>
+    <path d="M150 42 Q108 30 82 150"/><path d="M150 42 Q192 30 218 150"/>
+    <path class="thin" d="M150 62 Q120 58 104 150"/><path class="thin" d="M150 62 Q180 58 196 150"/>
+    <!-- upper bowl + pedestal -->
+    <ellipse cx="150" cy="150" rx="42" ry="9"/>
+    <path d="M140 158 V198 M160 158 V198"/>
+    <!-- basin -->
+    <ellipse cx="150" cy="200" rx="135" ry="28"/>
+    <ellipse class="thin" cx="150" cy="200" rx="120" ry="22"/>
+    <path d="M15 200 V216 A135 28 0 0 0 285 216 V200"/>
+    <path class="thin" d="M70 205 h18 M190 196 h22 M120 212 h14"/>
+  </svg>
+</template>
 
-<!-- 1. HOME -->
+<!-- 1. LANDING -->
 <section class="screen" id="s-home">
   <div class="top">
-    <div class="title"><small>Welcome to</small>Drumheller Fountain</div>
-    <button class="btn sm camBtn">Camera</button>
+    <div class="title">Drumheller Fountain<small>Welcome! Make a wish here.</small></div>
+    <button class="btn sm" data-go="map">Map →</button>
   </div>
   <div class="spacer"></div>
-  <div class="stack">
-    <button class="btn primary" data-go="design">Make a wish coin</button>
-    <button class="btn" data-go="wishes">See everyone's wishes</button>
+  <div class="stage" data-art></div>
+  <div class="spacer"></div>
+  <div class="center">
+    <button class="btn primary" style="min-width:220px" data-go="design" data-new>Toss a coin</button>
+    <button class="link" data-coll="all">See everyone's coins</button>
   </div>
 </section>
 
-<!-- 2a. DESIGN COIN: draw / sign -->
+<!-- MAP: visit other locations -->
+<section class="screen" id="s-map" hidden>
+  <div class="top"><button class="btn sm" data-go="home">← Back</button><div class="title">Visit other locations</div></div>
+  <div class="center" style="margin-top:12px">
+    <button class="btn loc" data-soon>The Quad <small>›</small></button>
+    <button class="btn loc" data-soon>Suzallo Library <small>›</small></button>
+    <button class="btn loc here" data-go="home">Drumheller Fountain <small>You are here</small></button>
+  </div>
+  <p class="note" style="margin-top:8px">Only Drumheller Fountain works in this prototype.</p>
+</section>
+
+<!-- 2. DESIGN: sign the coin -->
 <section class="screen" id="s-design" hidden>
-  <div class="top"><button class="btn sm" data-go="home">← Back</button><div class="title">Design coin</div></div>
+  <div class="top"><button class="btn sm" data-go="home">← Back</button><div class="title"><span class="boxed">Design coin</span></div></div>
   <div class="spacer"></div>
-  <div class="panel">
-    <div class="steps">Step 1 of 2</div>
+  <div class="center">
     <div class="signhead"><span>Sign the coin!</span><button class="btn sm" id="clearPad">Clear</button></div>
     <canvas id="pad" class="coin pad" width="480" height="480" aria-label="Your coin. Draw or sign on it with your finger."></canvas>
-    <p class="note" style="text-align:center">Draw or sign with your finger</p>
+    <p class="note">Draw or sign with your finger</p>
   </div>
-  <div style="height:10px"></div>
+  <div class="spacer"></div>
   <button class="btn primary" id="toWish">Next →</button>
 </section>
 
-<!-- 2b. WRITE WISH -->
+<!-- 3. WISH: coin on top, message below -->
 <section class="screen" id="s-wish" hidden>
-  <div class="top"><button class="btn sm" data-go="design">← Back</button><div class="title">Write your wish</div></div>
-  <div class="spacer"></div>
-  <div class="panel">
-    <div class="steps">Step 2 of 2</div>
-    <p class="lbl"><label for="wishText">Your wish</label></p>
-    <textarea id="wishText" maxlength="140" placeholder="I wish…"></textarea>
-    <label style="display:flex;gap:8px;align-items:center;margin-top:10px;font-size:14px"><input type="checkbox" id="priv" style="width:auto"> Keep my wish private (others only see my coin)</label>
-  </div>
-  <div style="height:10px"></div>
-  <button class="btn primary" id="toToss">Done → go toss it</button>
+  <div class="top"><button class="btn sm" data-go="design">← Back</button><div class="spacer"></div><span class="datechip" id="wishDate"></span></div>
+  <div class="coin bigcoin"><img id="wishCoin" alt="Your coin"></div>
+  <label for="wishText" style="font-weight:700;margin-top:6px">Write your wish</label>
+  <textarea id="wishText" class="lined" maxlength="160" placeholder="I wish…"></textarea>
+  <label class="check" for="priv"><input type="checkbox" id="priv"> Keep my wish private (others only see my coin)</label>
+  <button class="btn primary" id="toToss">Next: toss it →</button>
 </section>
 
-<!-- 3. TOSS -->
-<section class="screen" id="s-toss" hidden>
-  <div class="top"><button class="btn sm" data-go="wish">← Back</button><div class="title">Toss your coin</div><button class="btn sm camBtn">Camera</button></div>
-  <div class="spacer"></div>
+<!-- 4. TOSS: camera turns on here only -->
+<video id="cam" playsinline muted autoplay hidden></video>
+<section class="screen see-through" id="s-toss" hidden>
+  <div class="top"><button class="btn sm" data-go="wish">← Back</button><div class="spacer"></div><button class="btn sm" id="camBtn">Camera</button></div>
 </section>
-<div class="hint" id="tossHint" hidden><span class="arrow">↑</span>Swipe up to toss</div>
+<div class="stage" id="tossStage" hidden><div id="tossArt" data-art></div><div id="target" hidden><span>Aim at the fountain</span></div></div>
+<div class="hint" id="tossHint" hidden><b>↑</b>Swipe up to toss</div>
 <div class="coin" id="tossCoin" hidden><img id="tcImg" alt="Your coin"></div>
+<canvas id="fx"></canvas>
 
-<!-- 3b. DONE -->
-<section class="screen" id="s-done" hidden>
-  <div class="top"><div class="title">Your coin is in the fountain!</div></div>
-  <div class="spacer"></div>
-  <div class="stack">
-    <button class="btn primary" data-go="wishes">See everyone's wishes</button>
-    <div class="row2"><button class="btn" data-go="design" data-new>Make another</button><button class="btn" data-go="home">Home</button></div>
+<!-- 5. COIN COLLECTION (pops up after the toss) -->
+<section class="screen off" id="s-coll" hidden>
+  <div class="top"><button class="btn sm" id="collClose" aria-label="Close">✕</button>
+    <div class="tabs" role="tablist"><button role="tab" id="tabMine" aria-selected="true">Your coin</button><button role="tab" id="tabAll" aria-selected="false">All coins</button></div>
   </div>
+  <div class="banner" id="splashBanner" hidden>Splash! Your coin is in the fountain.</div>
+  <div class="grid" id="grid"></div>
 </section>
 
-<!-- 4. WISHES -->
-<section class="screen" id="s-wishes" hidden>
-  <div class="top"><button class="btn sm" data-go="home">← Home</button><div class="title">Wishes in the fountain<small>Tap a coin to read its wish</small></div></div>
-  <div class="spacer"></div>
-  <div class="card" id="wishCard"></div>
+<!-- 6. VIEW ONE COIN -->
+<section class="screen" id="s-view" hidden>
+  <div class="top"><button class="btn sm" id="viewBack">← Back</button><div class="spacer"></div><span class="datechip" id="viewDate"></span></div>
+  <div class="coin bigcoin"><img id="viewCoin" alt=""></div>
+  <p style="font-weight:700;margin:6px 0 0" id="viewWho"></p>
+  <p class="lined read" id="viewText"></p>
 </section>
 
 <div id="toast" hidden></div>
@@ -154,12 +186,17 @@ textarea{height:96px;resize:none}
 
 <script>
 const $ = s => document.querySelector(s);
+document.querySelectorAll('[data-art]').forEach(el => el.appendChild($('#fountainArt').content.cloneNode(true)));
+const esc = s => s.replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+const today = () => new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+
+/* ---------- data ---------- */
 const SAMPLES = [
-  {id:'s1',pos:{x:.22,y:.45},sig:'Mika',doodle:'star',wish:'Pass my qualifying exam this spring.',date:'Nov 12'},
-  {id:'s2',pos:{x:.40,y:.28},sig:'JL',doodle:'heart',wish:'That my grandma gets to visit Seattle next year.',date:'Nov 10'},
-  {id:'s3',pos:{x:.62,y:.30},sig:'Ari',doodle:'',wish:'',priv:true,date:'Nov 9'},
-  {id:'s4',pos:{x:.78,y:.52},sig:'T.S.',doodle:'smile',wish:'Find a summer internship I actually love.',date:'Nov 7'},
-  {id:'s5',pos:{x:.55,y:.72},sig:'Dan',doodle:'mountain',wish:'Clear skies so we can see Mt. Rainier at graduation.',date:'Nov 3'},
+  {id:'s1',sig:'Mika',doodle:'star',wish:'Pass my qualifying exam this spring.',date:'Nov 12, 2026'},
+  {id:'s2',sig:'JL',doodle:'heart',wish:'That my grandma gets to visit Seattle next year.',date:'Nov 10, 2026'},
+  {id:'s3',sig:'Ari',doodle:'',wish:'',priv:true,date:'Nov 9, 2026'},
+  {id:'s4',sig:'T.S.',doodle:'smile',wish:'Find a summer internship I actually love.',date:'Nov 7, 2026'},
+  {id:'s5',sig:'Dan',doodle:'mountain',wish:'Clear skies so we can see Mt. Rainier at graduation.',date:'Nov 3, 2026'},
 ];
 // Sample coins look hand-signed: a cursive name plus a quick doodle.
 function sampleImg(c){
@@ -176,28 +213,27 @@ function sampleImg(c){
 }
 SAMPLES.forEach(c => c.img = sampleImg(c));
 let mine = [];
-try { mine = JSON.parse(localStorage.getItem('lofi-coins-v2')) || []; } catch(e) {}
-const save = () => { try { localStorage.setItem('lofi-coins-v2', JSON.stringify(mine)); } catch(e) {} };
-
+try { mine = JSON.parse(localStorage.getItem('lofi-coins-v3')) || []; } catch(e) {}
+const save = () => { try { localStorage.setItem('lofi-coins-v3', JSON.stringify(mine)); } catch(e) {} };
+const all = () => [...mine.slice().reverse(), ...SAMPLES];
 const draft = {img:'', wish:'', priv:false};
 
-/* ---------- screens ---------- */
+/* ---------- navigation ---------- */
 let cur = 'home';
 function show(name){
-  document.querySelectorAll('.screen').forEach(s => s.hidden = s.id !== 's-'+name);
+  document.querySelectorAll('#s-home,#s-map,#s-design,#s-wish,#s-toss').forEach(s => s.hidden = s.id !== 's-'+name);
   cur = name; $('#toast').hidden = true;
   const tossing = name === 'toss';
-  $('#tossCoin').hidden = !tossing; $('#tossHint').hidden = !tossing;
-  if (tossing) resetToss();
-  $('#basin').style.display = (name==='design' || name==='wish') ? 'none' : '';
-  renderDots(name === 'wishes' || name === 'done');
-  if (name === 'wishes') selectCoin(null);
+  ['#tossStage','#tossCoin','#tossHint'].forEach(q => $(q).hidden = !tossing);
+  if (tossing) { resetToss(); if (!noCam) camOn(); } else camOff();
 }
 document.addEventListener('click', e => {
-  const b = e.target.closest('[data-go]'); if (!b) return;
-  if (b.hasAttribute('data-new')) { draft.img=''; draft.wish=''; draft.priv=false; $('#wishText').value=''; $('#priv').checked=false; clearPad(); }
-  show(b.dataset.go);
+  const b = e.target.closest('[data-go]');
+  if (b) { if (b.hasAttribute('data-new')) resetDraft(); show(b.dataset.go); return; }
+  const c = e.target.closest('[data-coll]'); if (c) openColl(c.dataset.coll, false);
+  if (e.target.closest('[data-soon]')) toast('Coming soon. Only Drumheller Fountain works in this prototype.');
 });
+function resetDraft(){ draft.img=''; draft.wish=''; draft.priv=false; $('#wishText').value=''; $('#priv').checked=false; clearPad(); }
 
 /* ---------- design: draw on the coin ---------- */
 const pad = $('#pad'), pg = pad.getContext('2d');
@@ -212,87 +248,122 @@ pad.addEventListener('pointermove', e => { if (!stroke) return; const p = padXY(
 ['pointerup','pointercancel','pointerleave'].forEach(t => pad.addEventListener(t, () => stroke = null));
 $('#clearPad').onclick = clearPad;
 function padImage(){ const c=document.createElement('canvas'); c.width=c.height=240; c.getContext('2d').drawImage(pad,0,0,240,240); return c.toDataURL(); }
-$('#toWish').onclick = () => { if (!inked) { toast('Sign or draw on the coin first'); return; } draft.img = padImage(); show('wish'); };
+$('#toWish').onclick = () => {
+  if (!inked) { toast('Sign or draw on the coin first'); return; }
+  draft.img = padImage(); $('#wishCoin').src = draft.img; $('#wishDate').textContent = today(); show('wish');
+};
 $('#toToss').onclick = () => {
   draft.wish = $('#wishText').value.trim(); draft.priv = $('#priv').checked;
   if (!draft.wish) { toast('Write a wish first'); $('#wishText').focus(); return; }
   show('toss');
 };
 
-/* ---------- toss (swipe up) ---------- */
+/* ---------- toss: swipe up, splash, then the collection pops up ---------- */
 const tc = $('#tossCoin');
 let drag = null, tossed = false;
-function resetToss(){
-  tossed = false; tc.classList.remove('flying'); tc.style.transform = 'translateX(-50%)'; tc.style.opacity = 1;
-  $('#tcImg').src = draft.img;
-}
+function resetToss(){ tossed = false; tc.classList.remove('flying'); tc.style.transform = ''; tc.style.visibility = ''; $('#tossHint').hidden = false; $('#tcImg').src = draft.img; }
 tc.addEventListener('pointerdown', e => { if (tossed) return; tc.setPointerCapture(e.pointerId); drag = {y:e.clientY, x:e.clientX, t:performance.now(), dy:0, dx:0}; });
-tc.addEventListener('pointermove', e => {
-  if (!drag) return; drag.dy = e.clientY - drag.y; drag.dx = e.clientX - drag.x;
-  tc.style.transform = `translate(calc(-50% + ${drag.dx*.3}px), ${Math.min(0, drag.dy)}px)`;
-});
-tc.addEventListener('pointerup', end); tc.addEventListener('pointercancel', end);
-function end(){
+tc.addEventListener('pointermove', e => { if (!drag) return; drag.dy = e.clientY - drag.y; drag.dx = e.clientX - drag.x;
+  tc.style.transform = `translate(${drag.dx*.3}px, ${Math.min(0, drag.dy)}px)`; });
+tc.addEventListener('pointerup', endDrag); tc.addEventListener('pointercancel', endDrag);
+function endDrag(){
   if (!drag) return; const d = drag; drag = null;
   const v = -d.dy / Math.max(1, performance.now() - d.t);
   if (d.dy < -90 || (d.dy < -30 && v > .5)) return toss();
-  tc.style.transform = 'translateX(-50%)';
+  tc.style.transform = '';
   if (Math.abs(d.dy) < 10) toast('Swipe up on the coin to toss it');
+}
+function basinPoint(){
+  // Inner water ellipse of the line-art fountain: cx 150, cy 200, rx 120, ry 22 in a 300x260 box.
+  const r = $('#tossStage').getBoundingClientRect(), k = r.width/300;
+  const a = Math.random()*Math.PI*2, d = Math.sqrt(Math.random())*.7;
+  return {x: r.left + (150 + Math.cos(a)*120*d)*k, y: r.top + (200 + Math.sin(a)*22*d)*k, k};
 }
 function toss(){
   tossed = true; $('#tossHint').hidden = true;
-  const r = $('#basin').getBoundingClientRect(), c = tc.getBoundingClientRect();
-  let pos, tries = 0;
-  do { pos = {x:.18 + Math.random()*.64, y:.25 + Math.random()*.5}; }
-  while (tries++ < 60 && all().some(c => { const q = c.pos || posFor(c.id); return Math.hypot((q.x-pos.x)*2.6, q.y-pos.y) < .32; }));
-  const tx = r.left + r.width*pos.x - (c.left + c.width/2), ty = r.top + r.height*pos.y - (c.top + c.height/2);
+  const p = basinPoint(), c = tc.getBoundingClientRect();
   tc.classList.add('flying');
-  tc.style.transform = `translate(calc(-50% + ${tx}px), ${ty}px) scale(.2)`;
-  tc.style.opacity = .3;
-  mine.push({id:'m'+Date.now(), img:draft.img, wish:draft.wish, priv:draft.priv, date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'}), pos, mine:true});
-  save();
-  setTimeout(() => show('done'), 750);
+  tc.style.transform = `translate(${p.x-(c.left+c.width/2)}px, ${p.y-(c.top+c.height/2)}px) scale(.12)`;
+  const coin = {id:'m'+Date.now(), img:draft.img, wish:draft.wish, priv:draft.priv, date:today(), mine:true};
+  mine.push(coin); save();
+  setTimeout(() => { tc.style.visibility = 'hidden'; splash(p.x, p.y, p.k); }, 650);
+  setTimeout(() => openColl('mine', true, coin.id), 650 + 1300);
 }
 
-/* ---------- wishes ---------- */
-function posFor(id){ let h=0; for (const ch of id) h = (h*31 + ch.charCodeAt(0)) >>> 0;
-  const a = (h % 360) * Math.PI/180, rr = .15 + ((h>>9) % 100)/100*.3; return {x:.5 + Math.cos(a)*rr, y:.5 + Math.sin(a)*rr*.9}; }
-function all(){ return [...SAMPLES, ...mine]; }
-function renderDots(on){
-  const box = $('#dots'); if (!on) { box.innerHTML=''; return; }
-  box.innerHTML = all().map(c => { const p = c.pos || posFor(c.id);
-    return `<button class="dot${c.mine?' mine':''}" data-id="${c.id}" style="left:${p.x*100}%;top:${p.y*100}%" aria-label="${c.mine?'Your coin':'A visitor\'s coin'}"><img src="${c.img}" alt=""></button>`; }).join('');
-}
-$('#dots').addEventListener('click', e => { const d = e.target.closest('.dot'); if (!d || cur!=='wishes') return; selectCoin(d.dataset.id); });
-function selectCoin(id){
-  document.querySelectorAll('.dot').forEach(d => d.classList.toggle('sel', d.dataset.id === id));
-  const c = all().find(x => x.id === id), card = $('#wishCard');
-  card.classList.toggle('has-coin', !!c);
-  if (!c) { card.innerHTML = `<p class="note" style="margin:0">${all().length} coins in the fountain · coins marked “You” are yours</p>`; return; }
-  const esc = s => s.replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
-  card.innerHTML = `<img class="thumb" src="${c.img}" alt=""><div>
-    <h3>${c.mine ? 'Your coin' : 'A visitor\'s coin'}</h3>
-    <p>${c.priv && !c.mine ? '<i>This wish is private.</i>' : '“'+esc(c.wish)+'”'}</p>
-    <p class="meta">Tossed ${c.date}${c.mine && c.priv ? ' · private' : ''}</p></div>`;
+/* splash: ripples + droplets on a canvas over the scene */
+const fx = $('#fx'), fg = fx.getContext('2d');
+let drops = [], rings = [], raf = 0;
+function sizeFx(){ const d = Math.min(2, devicePixelRatio||1); fx.width = innerWidth*d; fx.height = innerHeight*d; fg.setTransform(d,0,0,d,0,0); }
+addEventListener('resize', sizeFx); sizeFx();
+function splash(x, y, k){
+  const onCam = !!stream, col = onCam ? '255,255,255' : '17,17,17';
+  for (let i=0;i<3;i++) rings.push({x,y,max:(60+i*35)*k,age:-i*.15,life:1.1,col});
+  for (let i=0;i<40;i++){ const a = -Math.PI/2 + (Math.random()-.5)*1.4, v = 180 + Math.random()*260;
+    drops.push({x,y,vx:Math.cos(a)*v*.7,vy:Math.sin(a)*v,floor:y+Math.random()*6,r:1.5+Math.random()*2.5,col}); }
+  if (navigator.vibrate) try { navigator.vibrate(30); } catch(e) {}
+  cancelAnimationFrame(raf); let last = performance.now();
+  const step = now => { const dt = Math.min(.05,(now-last)/1000); last = now;
+    fg.clearRect(0,0,innerWidth,innerHeight);
+    rings = rings.filter(r => { r.age += dt; if (r.age < 0) return true; const t = r.age/r.life; if (t >= 1) return false;
+      fg.strokeStyle = `rgba(${r.col},${1-t})`; fg.lineWidth = 2.5*(1-t)+.5; fg.beginPath(); fg.ellipse(r.x,r.y,r.max*t,r.max*t*.2,0,0,Math.PI*2); fg.stroke(); return true; });
+    drops = drops.filter(p => { p.vy += 900*dt; p.x += p.vx*dt; p.y += p.vy*dt; if (p.vy > 0 && p.y > p.floor) return false;
+      fg.fillStyle = `rgba(${p.col},.9)`; fg.beginPath(); fg.arc(p.x,p.y,p.r,0,Math.PI*2); fg.fill(); return true; });
+    if (rings.length || drops.length) raf = requestAnimationFrame(step); else fg.clearRect(0,0,innerWidth,innerHeight);
+  };
+  raf = requestAnimationFrame(step);
 }
 
-/* ---------- camera ---------- */
-let stream = null;
+/* ---------- coin collection popup ---------- */
+let collTab = 'mine', fresh = null;
+function openColl(tab, afterToss, newId){
+  collTab = tab; fresh = newId || null; $('#splashBanner').hidden = !afterToss;
+  renderGrid(); const s = $('#s-coll'); s.hidden = false; s.classList.add('off');
+  requestAnimationFrame(() => requestAnimationFrame(() => s.classList.remove('off')));
+}
+function closeColl(){ const s = $('#s-coll'); s.classList.add('off'); setTimeout(() => { s.hidden = true; }, 350); }
+$('#collClose').onclick = () => { closeColl(); if (cur !== 'home') show('home'); };
+$('#tabMine').onclick = () => { collTab = 'mine'; renderGrid(); };
+$('#tabAll').onclick = () => { collTab = 'all'; renderGrid(); };
+function renderGrid(){
+  $('#tabMine').setAttribute('aria-selected', collTab==='mine'); $('#tabAll').setAttribute('aria-selected', collTab==='all');
+  const list = collTab === 'mine' ? all().filter(c => c.mine) : all();
+  $('#grid').innerHTML = list.length ? list.map(c => `<button class="cell${c.id===fresh?' new':''}" data-id="${c.id}">
+      <span class="coin"><img src="${c.img}" alt=""></span><small>${c.id===fresh?'<b>Just tossed</b> · ':c.mine?'<b>Yours</b> · ':''}${c.date}</small></button>`).join('')
+    : `<p class="empty">You haven't tossed a coin yet.</p>`;
+}
+$('#grid').addEventListener('click', e => { const b = e.target.closest('.cell'); if (b) openView(b.dataset.id); });
+
+/* ---------- view one coin ---------- */
+function openView(id){
+  const c = all().find(x => x.id === id); if (!c) return;
+  $('#viewCoin').src = c.img; $('#viewDate').textContent = c.date;
+  $('#viewWho').textContent = c.mine ? 'Your coin' + (c.priv ? ' (wish kept private)' : '') : "A visitor's coin";
+  $('#viewText').innerHTML = c.priv && !c.mine ? '<i>This wish is private.</i>' : esc(c.wish);
+  $('#s-view').hidden = false;
+}
+$('#viewBack').onclick = () => $('#s-view').hidden = true;
+
+/* ---------- camera (toss screen only) ---------- */
+const noCam = new URLSearchParams(location.search).has('nocam');
+let stream = null, camWanted = true;
 async function camOn(){
-  try {
-    stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}, audio:false});
-    const v = $('#cam'); v.srcObject = stream; v.hidden = false; $('#ph').hidden = true; await v.play().catch(()=>{});
-  } catch(e) { stream = null; toast('Camera not available. Using the placeholder view.'); }
-  camLabel();
+  if (stream || !camWanted) return applyCam();
+  try { stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}, audio:false});
+    if (cur !== 'toss') { camOff(); return; }
+    const v = $('#cam'); v.srcObject = stream; await v.play().catch(()=>{});
+  } catch(e) { stream = null; camWanted = false; toast('Camera not available. Showing the drawing instead.'); }
+  applyCam();
 }
-function camOff(){ if (stream) stream.getTracks().forEach(t => t.stop()); stream = null; $('#cam').hidden = true; $('#ph').hidden = false; camLabel(); }
-function camLabel(){ document.querySelectorAll('.camBtn').forEach(b => b.textContent = stream ? 'Camera: on' : 'Camera: off'); }
-document.querySelectorAll('.camBtn').forEach(b => b.onclick = () => stream ? camOff() : camOn());
+function camOff(){ if (stream) stream.getTracks().forEach(t => t.stop()); stream = null; applyCam(); }
+function applyCam(){
+  const on = !!stream; $('#cam').hidden = !on; $('#tossArt').hidden = on; $('#target').hidden = !on;
+  $('#camBtn').textContent = on ? 'Camera: on' : 'Camera: off';
+}
+$('#camBtn').onclick = () => { if (stream) { camWanted = false; camOff(); } else { camWanted = true; camOn(); } };
 
-let tt; function toast(m){ const t=$('#toast'); t.textContent=m; t.hidden=false; clearTimeout(tt); tt=setTimeout(()=>t.hidden=true, 2200); }
+let tt; function toast(m){ const t=$('#toast'); t.textContent=m; t.hidden=false; clearTimeout(tt); tt=setTimeout(()=>t.hidden=true, 2400); }
 
-clearPad(); camLabel(); show('home');
-if (new URLSearchParams(location.search).has('nocam')) {} else camOn();
+clearPad(); applyCam(); show('home');
 </script>
 </body>
 </html>

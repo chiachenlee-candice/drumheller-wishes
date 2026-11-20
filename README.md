@@ -12,4 +12,4 @@ Live: https://chiachenlee-candice.github.io/drumheller-wishes/
 
 - **High-fidelity AR prototype** (git tag `v1-hifi`): https://chiachenlee-candice.github.io/drumheller-wishes/
 - **Lo-fi wireframe for usability testing** (`lofi/`): https://chiachenlee-candice.github.io/drumheller-wishes/lofi/
-  Grayscale boxes only. It keeps the live camera and the real swipe-up gesture, which paper can't simulate, and tests three tasks: sign or draw on a coin with your finger and write a wish, toss it, and find another visitor's wish. Add `?nocam` to the URL to use the placeholder instead of the camera.
+  Black-and-white line drawings only. Flow: line-art fountain landing (with a Map of other locations) → sign or draw on the coin → write a wish under the coin → the camera turns on only for the swipe-up toss, with a splash → a Your coin / All coins popup where any coin opens to show its drawing and wish. Add `?nocam` to the URL to skip the camera.
