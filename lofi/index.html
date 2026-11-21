@@ -31,8 +31,7 @@ button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:tra
 /* line-art fountain (landing + toss fallback). Basin geometry is shared with JS. */
 .stage{position:relative;width:min(86vw,380px);aspect-ratio:300/260;margin:0 auto}
 .stage svg{position:absolute;inset:0;width:100%;height:100%}
-.stage svg *{fill:none;stroke:var(--ink);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
-.stage svg .thin{stroke-width:1.5;stroke:var(--mid)}
+.stage svg *{stroke-linecap:round;stroke-linejoin:round}
 #target{position:absolute;left:10%;width:80%;top:calc(178/260*100%);height:calc(44/260*100%);border:3px dashed #fff;border-radius:50%;box-shadow:0 0 0 2px rgba(0,0,0,.5),inset 0 0 0 2px rgba(0,0,0,.5)}
 #target span{position:absolute;left:50%;top:-30px;transform:translateX(-50%);white-space:nowrap;font-size:12px;background:var(--paper);border:1px solid var(--ink);padding:1px 6px}
 
@@ -89,19 +88,58 @@ button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:tra
 <body>
 
 <template id="fountainArt">
+  <!-- Line drawing after the real Drumheller Fountain: tall center jet, ring of arching jets, Mt. Rainier behind the trees -->
   <svg viewBox="0 0 300 260" aria-hidden="true">
-    <!-- spray -->
-    <path d="M150 150 V38"/>
-    <path d="M150 42 Q108 30 82 150"/><path d="M150 42 Q192 30 218 150"/>
-    <path class="thin" d="M150 62 Q120 58 104 150"/><path class="thin" d="M150 62 Q180 58 196 150"/>
-    <!-- upper bowl + pedestal -->
-    <ellipse cx="150" cy="150" rx="42" ry="9"/>
-    <path d="M140 158 V198 M160 158 V198"/>
-    <!-- basin -->
-    <ellipse cx="150" cy="200" rx="135" ry="28"/>
-    <ellipse class="thin" cx="150" cy="200" rx="120" ry="22"/>
-    <path d="M15 200 V216 A135 28 0 0 0 285 216 V200"/>
-    <path class="thin" d="M70 205 h18 M190 196 h22 M120 212 h14"/>
+    <path d="M6 150 C62 138 104 110 130 82 Q143 66 150 64 Q157 66 170 82 C196 110 238 138 294 150" fill="none" stroke="#c4c4c4" stroke-width="1.1"/>
+    <path d="M126 86 L135 92 L141 86 L148 95 L155 87 L162 94 L169 86 L176 91" fill="none" stroke="#c4c4c4" stroke-width="1"/>
+    <path d="M-8 105.4 A11.3 11.0 0 0 1 9.1 114.9 A11.2 9.8 0 0 1 26.3 123.4 A9.6 8.5 0 0 1 40.9 129.8 A11.5 9.1 0 0 1 61.1 137.2 A9.8 8.9 0 0 1 74.9 141.5 A10.0 9.9 0 0 1 88.3 144.9 A12.7 9.5 0 0 1 107.1 148.6 A8.6 6.2 0 0 1 120.3 150.4 A8.8 6.2 0 0 1 135.0 151.6 A11.0 10.4 0 0 1 152.2 152.0 A12.0 10.2 0 0 1 169.8 151.3 A12.2 9.5 0 0 1 188.8 149.2 A16.5 15.7 0 0 1 210.8 145.1 A11.9 9.1 0 0 1 230.1 140.0 A8.8 8.2 0 0 1 245.7 134.9 A11.9 9.7 0 0 1 262.3 128.4 A15.6 10.9 0 0 1 284.0 118.5 A10.9 9.2 0 0 1 298.9 110.6 A13.7 9.9 0 0 1 320.7 97.6 L308 190 L-8 190 Z" fill="#fff" stroke="none"/>
+    <path d="M-8 105.4 A11.3 11.0 0 0 1 9.1 114.9 A11.2 9.8 0 0 1 26.3 123.4 A9.6 8.5 0 0 1 40.9 129.8 A11.5 9.1 0 0 1 61.1 137.2 A9.8 8.9 0 0 1 74.9 141.5 A10.0 9.9 0 0 1 88.3 144.9 A12.7 9.5 0 0 1 107.1 148.6 A8.6 6.2 0 0 1 120.3 150.4 A8.8 6.2 0 0 1 135.0 151.6 A11.0 10.4 0 0 1 152.2 152.0 A12.0 10.2 0 0 1 169.8 151.3 A12.2 9.5 0 0 1 188.8 149.2 A16.5 15.7 0 0 1 210.8 145.1 A11.9 9.1 0 0 1 230.1 140.0 A8.8 8.2 0 0 1 245.7 134.9 A11.9 9.7 0 0 1 262.3 128.4 A15.6 10.9 0 0 1 284.0 118.5 A10.9 9.2 0 0 1 298.9 110.6 A13.7 9.9 0 0 1 320.7 97.6" fill="none" stroke="#8c8c8c" stroke-width="1.1"/>
+    <path d="M-4 238 Q20 227 52 230 Q78 228 98 238" fill="none" stroke="#8c8c8c" stroke-width="1.1"/>
+    <path d="M202 238 Q222 228 248 230 Q280 227 304 238" fill="none" stroke="#8c8c8c" stroke-width="1.1"/>
+    <path d="M124 229 L102 262 M176 229 L198 262" fill="none" stroke="#c4c4c4" stroke-width="1"/>
+    <path d="M15 200 V207 A135 28 0 0 0 285 207 V200" fill="#fff" stroke="#111" stroke-width="1.5"/>
+    <ellipse cx="150" cy="200" rx="135" ry="28" fill="#fff" stroke="#111" stroke-width="1.5"/>
+    <ellipse cx="150" cy="200" rx="120" ry="22" fill="#f6f6f6" stroke="#8c8c8c" stroke-width="1"/>
+    <path d="M58 205 h14 M210 196 h18 M108 214 h10 M186 212 h10" fill="none" stroke="#c4c4c4" stroke-width="1"/>
+    <path d="M47.1 193.5 Q54.1 155.2 82.1 194.4" fill="none" stroke="#111" stroke-width="1"/>
+    <path d="M47.1 193.5 Q52.1 164.3 71.8 193.8" fill="none" stroke="#8c8c8c" stroke-width="0.8"/>
+    <path d="M47.1 193.5 Q55.8 161.2 90.3 194.8" fill="none" stroke="#c4c4c4" stroke-width="0.8"/>
+    <path d="M86.2 184.5 Q90.5 151.9 107.9 188.4" fill="none" stroke="#111" stroke-width="1"/>
+    <path d="M86.2 184.5 Q89.2 159.6 101.5 187.0" fill="none" stroke="#8c8c8c" stroke-width="0.8"/>
+    <path d="M86.2 184.5 Q91.5 157.0 113.0 189.6" fill="none" stroke="#c4c4c4" stroke-width="0.8"/>
+    <path d="M149.6 181.0 Q149.6 150.6 149.7 186.1" fill="none" stroke="#111" stroke-width="1"/>
+    <path d="M149.6 181.0 Q149.6 157.8 149.7 184.3" fill="none" stroke="#8c8c8c" stroke-width="0.8"/>
+    <path d="M149.6 181.0 Q149.6 155.4 149.7 187.6" fill="none" stroke="#c4c4c4" stroke-width="0.8"/>
+    <path d="M213.1 184.4 Q208.8 151.8 191.7 188.4" fill="none" stroke="#111" stroke-width="1"/>
+    <path d="M213.1 184.4 Q210.1 159.6 198.0 186.9" fill="none" stroke="#8c8c8c" stroke-width="0.8"/>
+    <path d="M213.1 184.4 Q207.8 157.0 186.6 189.5" fill="none" stroke="#c4c4c4" stroke-width="0.8"/>
+    <path d="M252.6 193.4 Q245.6 155.1 217.7 194.3" fill="none" stroke="#111" stroke-width="1"/>
+    <path d="M252.6 193.4 Q247.7 164.2 228.0 193.7" fill="none" stroke="#8c8c8c" stroke-width="0.8"/>
+    <path d="M252.6 193.4 Q244.0 161.2 209.5 194.7" fill="none" stroke="#c4c4c4" stroke-width="0.8"/>
+    <path d="M137 199 C139.5 150 143 92 145.5 48 C146.5 33 148.2 26 150 26 C151.8 26 153.5 33 154.5 48 C157 92 160.5 150 163 199 Z" fill="#fff" stroke="none"/>
+    <path d="M138 198 C142.2 140 148.6 70 148.6 30" fill="none" stroke="#8c8c8c" stroke-width="1"/>
+    <path d="M143 198 C145.4 140 149.2 70 149.2 30" fill="none" stroke="#111" stroke-width="1.1"/>
+    <path d="M147 198 C148.1 140 149.6 70 149.6 30" fill="none" stroke="#c4c4c4" stroke-width="0.8"/>
+    <path d="M150 198 C150.0 140 150.0 70 150.0 30" fill="none" stroke="#111" stroke-width="1.2"/>
+    <path d="M153 198 C151.9 140 150.4 70 150.4 30" fill="none" stroke="#c4c4c4" stroke-width="0.8"/>
+    <path d="M157 198 C154.6 140 150.8 70 150.8 30" fill="none" stroke="#111" stroke-width="1.1"/>
+    <path d="M162 198 C157.8 140 151.4 70 151.4 30" fill="none" stroke="#8c8c8c" stroke-width="1"/>
+    <path d="M148 32 Q150 24 152 32" fill="none" stroke="#111" stroke-width="1.1"/>
+    <path d="M147 32 Q132 30 124 62 M153 32 Q168 30 176 62 M146.5 42 Q137 44 132 70 M153.5 42 Q163 44 168 70" fill="none" stroke="#8c8c8c" stroke-width=".9"/>
+    <path d="M123 68 v3 M126 77 v3 M177 68 v3 M174 77 v3 M131 76 v3 M169 76 v3" fill="none" stroke="#c4c4c4" stroke-width="1"/>
+    <path d="M138 197 Q128 188 117 193 M162 197 Q172 188 183 193" fill="none" stroke="#8c8c8c" stroke-width=".9"/>
+    <path d="M252.9 204.5 Q245.9 159.2 217.9 201.6" fill="none" stroke="#111" stroke-width="1"/>
+    <path d="M252.9 204.5 Q247.9 169.9 228.2 202.2" fill="none" stroke="#8c8c8c" stroke-width="0.8"/>
+    <path d="M252.9 204.5 Q244.2 166.4 209.7 201.2" fill="none" stroke="#c4c4c4" stroke-width="0.8"/>
+    <path d="M213.8 213.5 Q209.5 162.5 192.1 207.6" fill="none" stroke="#111" stroke-width="1"/>
+    <path d="M213.8 213.5 Q210.8 174.6 198.5 209.0" fill="none" stroke="#8c8c8c" stroke-width="0.8"/>
+    <path d="M213.8 213.5 Q208.5 170.6 187.0 206.4" fill="none" stroke="#c4c4c4" stroke-width="0.8"/>
+    <path d="M86.9 213.6 Q91.2 162.6 108.3 207.6" fill="none" stroke="#111" stroke-width="1"/>
+    <path d="M86.9 213.6 Q89.9 174.6 102.0 209.1" fill="none" stroke="#8c8c8c" stroke-width="0.8"/>
+    <path d="M86.9 213.6 Q92.2 170.6 113.4 206.5" fill="none" stroke="#c4c4c4" stroke-width="0.8"/>
+    <path d="M47.4 204.6 Q54.4 159.3 82.3 201.7" fill="none" stroke="#111" stroke-width="1"/>
+    <path d="M47.4 204.6 Q52.3 170.0 72.0 202.3" fill="none" stroke="#8c8c8c" stroke-width="0.8"/>
+    <path d="M47.4 204.6 Q56.0 166.4 90.5 201.3" fill="none" stroke="#c4c4c4" stroke-width="0.8"/>
   </svg>
 </template>
 
@@ -201,7 +239,7 @@ const SAMPLES = [
 // Sample coins look hand-signed: a cursive name plus a quick doodle.
 function sampleImg(c){
   const S=240, cv=document.createElement('canvas'); cv.width=cv.height=S; const g=cv.getContext('2d');
-  g.fillStyle='#fff'; g.fillRect(0,0,S,S); g.strokeStyle=g.fillStyle='#111'; g.lineWidth=5; g.lineCap=g.lineJoin='round';
+  g.fillStyle='#fff'; g.fillRect(0,0,S,S); engrave(g,S); g.strokeStyle=g.fillStyle='#111'; g.lineWidth=5; g.lineCap=g.lineJoin='round';
   g.font='italic 42px "Bradley Hand","Segoe Print","Comic Sans MS",cursive'; g.textAlign='center'; g.textBaseline='middle';
   g.fillText(c.sig, S/2, c.doodle ? S*.66 : S/2);
   const x=S/2, y=S*.32; g.beginPath();
@@ -210,6 +248,31 @@ function sampleImg(c){
   if (c.doodle==='smile'){ g.arc(x,y,30,0,Math.PI*2); g.moveTo(x-16,y+6); g.quadraticCurveTo(x,y+22,x+16,y+6); g.moveTo(x-10,y-8); g.arc(x-10,y-8,1,0,7); g.moveTo(x+10,y-8); g.arc(x+10,y-8,1,0,7); }
   if (c.doodle==='mountain'){ g.moveTo(x-50,y+24); g.lineTo(x-8,y-26); g.lineTo(x+14,y); g.lineTo(x+26,y-12); g.lineTo(x+52,y+24); }
   g.stroke(); return cv.toDataURL();
+}
+// Faint engraving on every blank coin: beaded rim, curved lettering, and a ghosted fountain in the middle.
+function arcText(g, str, R, size, bottom){
+  g.save(); g.font = `600 ${size}px Georgia,"Times New Roman",serif`; g.textAlign='center'; g.textBaseline='middle';
+  const ws = [...str].map(ch => g.measureText(ch).width + size*.18), total = ws.reduce((a,b)=>a+b,0)/R;
+  let a = bottom ? Math.PI/2 + total/2 : -Math.PI/2 - total/2;
+  [...str].forEach((ch,i) => { const w = ws[i]/R; a += bottom ? -w/2 : w/2;
+    g.save(); g.rotate(a + (bottom ? -Math.PI/2 : Math.PI/2)); g.fillText(ch, 0, bottom ? R : -R); g.restore();
+    a += bottom ? -w/2 : w/2; });
+  g.restore();
+}
+function engrave(g, S){
+  const r = S/2; g.save(); g.translate(r, r);
+  g.strokeStyle = '#dcdcdc'; g.lineWidth = S*.006; g.beginPath(); g.arc(0,0,r*.84,0,Math.PI*2); g.stroke();
+  g.fillStyle = '#d6d6d6'; for (let i=0;i<72;i++){ const a=i/72*Math.PI*2; g.beginPath(); g.arc(Math.cos(a)*r*.93, Math.sin(a)*r*.93, S*.005, 0, Math.PI*2); g.fill(); }
+  g.fillStyle = '#d2d2d2';
+  arcText(g, 'DRUMHELLER FOUNTAIN', r*.72, S*.056, false);
+  arcText(g, 'MAKE A WISH', r*.72, S*.056, true);
+  g.font = `${S*.04}px Georgia,serif`; g.textAlign='center'; g.textBaseline='middle'; g.fillText('✦', -r*.72, 0); g.fillText('✦', r*.72, 0);
+  // ghosted fountain: tall jet with a falling crown, shallow basin
+  g.strokeStyle = '#ececec'; g.lineWidth = S*.012; g.lineCap = 'round';
+  g.beginPath(); g.moveTo(0, r*.3); g.lineTo(0, -r*.42); g.stroke();
+  for (const sx of [-1,1]) { g.beginPath(); g.moveTo(0, -r*.42); g.quadraticCurveTo(sx*r*.16, -r*.46, sx*r*.22, -r*.16); g.stroke(); }
+  g.beginPath(); g.ellipse(0, r*.32, r*.5, r*.09, 0, 0, Math.PI*2); g.stroke();
+  g.restore();
 }
 SAMPLES.forEach(c => c.img = sampleImg(c));
 let mine = [];
@@ -238,7 +301,7 @@ function resetDraft(){ draft.img=''; draft.wish=''; draft.priv=false; $('#wishTe
 /* ---------- design: draw on the coin ---------- */
 const pad = $('#pad'), pg = pad.getContext('2d');
 let inked = false, stroke = null;
-function clearPad(){ pg.fillStyle='#fff'; pg.fillRect(0,0,pad.width,pad.height); inked=false; }
+function clearPad(){ pg.fillStyle='#fff'; pg.fillRect(0,0,pad.width,pad.height); engrave(pg,pad.width); inked=false; }
 function padXY(e){ const r=pad.getBoundingClientRect(); return [(e.clientX-r.left)*pad.width/r.width, (e.clientY-r.top)*pad.height/r.height]; }
 pad.addEventListener('pointerdown', e => { e.preventDefault(); pad.setPointerCapture(e.pointerId); stroke = padXY(e);
   pg.fillStyle='#111'; pg.beginPath(); pg.arc(stroke[0],stroke[1],5,0,Math.PI*2); pg.fill(); inked = true; });
