@@ -61,7 +61,7 @@ button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:tra
 #fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:6}
 
 /* coin collection popup */
-#s-coll{top:auto;height:92%;border-top:2px solid var(--ink);box-shadow:0 -10px 40px rgba(0,0,0,.25);transform:translateY(0);transition:transform .35s ease;z-index:8}
+#s-coll{transform:translateY(0);transition:transform .35s ease;z-index:8}
 #s-coll.off{transform:translateY(105%)}
 .tabs{display:flex;flex:1;border:2px solid var(--ink);border-radius:999px;overflow:hidden}
 .tabs button{flex:1;border:0;background:var(--paper);padding:8px 6px;font-weight:700;font-size:15px}
@@ -226,7 +226,13 @@ button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:tra
 
 <script>
 const $ = s => document.querySelector(s);
-document.querySelectorAll('[data-art]').forEach(el => el.appendChild($('#fountainArt').content.cloneNode(true)));
+// Each copy of the fountain gets its own gradient ids: a copy on a hidden screen can't supply gradients to a visible one.
+document.querySelectorAll('[data-art]').forEach((el, n) => {
+  const art = $('#fountainArt').content.cloneNode(true);
+  art.querySelectorAll('[id]').forEach(d => { const id = d.id; d.id = id + '-' + n;
+    art.querySelectorAll(`[stroke="url(#${id})"]`).forEach(x => x.setAttribute('stroke', `url(#${id}-${n})`)); });
+  el.appendChild(art);
+});
 const esc = s => s.replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 const today = () => new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
 
@@ -382,6 +388,7 @@ function splash(x, y, k){
 let collTab = 'mine', fresh = null;
 function openColl(tab, afterToss, newId){
   collTab = tab; fresh = newId || null; $('#splashBanner').hidden = !afterToss;
+  if (cur === 'toss') camOff(); // the collection is its own full page; nothing from the camera behind it
   renderGrid(); const s = $('#s-coll'); s.hidden = false; s.classList.add('off');
   requestAnimationFrame(() => requestAnimationFrame(() => s.classList.remove('off')));
 }
