@@ -19,6 +19,7 @@ button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:tra
 .top{display:flex;align-items:center;gap:8px;min-height:40px}
 .title{flex:1;font-weight:800;font-size:20px;line-height:1.1}
 .title small{display:block;font-weight:400;font-size:13px;color:var(--mid)}
+.title .kicker{font-size:15px;color:var(--ink);margin-bottom:2px}
 .boxed{background:var(--paper);border:2px solid var(--ink);padding:6px 10px;font-size:17px}
 .btn{border:2px solid var(--ink);background:var(--paper);padding:12px 14px;font-weight:700;border-radius:0}
 .btn.primary{background:var(--ink);color:var(--paper)}
@@ -116,18 +117,123 @@ button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:tra
     <path d="M252.6 193.4 Q245.6 155.1 217.7 194.3" fill="none" stroke="#111" stroke-width="1"/>
     <path d="M252.6 193.4 Q247.7 164.2 228.0 193.7" fill="none" stroke="#8c8c8c" stroke-width="0.8"/>
     <path d="M252.6 193.4 Q244.0 161.2 209.5 194.7" fill="none" stroke="#c4c4c4" stroke-width="0.8"/>
-    <path d="M137 199 C139.5 150 143 92 145.5 48 C146.5 33 148.2 26 150 26 C151.8 26 153.5 33 154.5 48 C157 92 160.5 150 163 199 Z" fill="#fff" stroke="none"/>
-    <path d="M138 198 C142.2 140 148.6 70 148.6 30" fill="none" stroke="#8c8c8c" stroke-width="1"/>
-    <path d="M143 198 C145.4 140 149.2 70 149.2 30" fill="none" stroke="#111" stroke-width="1.1"/>
-    <path d="M147 198 C148.1 140 149.6 70 149.6 30" fill="none" stroke="#c4c4c4" stroke-width="0.8"/>
-    <path d="M150 198 C150.0 140 150.0 70 150.0 30" fill="none" stroke="#111" stroke-width="1.2"/>
-    <path d="M153 198 C151.9 140 150.4 70 150.4 30" fill="none" stroke="#c4c4c4" stroke-width="0.8"/>
-    <path d="M157 198 C154.6 140 150.8 70 150.8 30" fill="none" stroke="#111" stroke-width="1.1"/>
-    <path d="M162 198 C157.8 140 151.4 70 151.4 30" fill="none" stroke="#8c8c8c" stroke-width="1"/>
-    <path d="M148 32 Q150 24 152 32" fill="none" stroke="#111" stroke-width="1.1"/>
-    <path d="M147 32 Q132 30 124 62 M153 32 Q168 30 176 62 M146.5 42 Q137 44 132 70 M153.5 42 Q163 44 168 70" fill="none" stroke="#8c8c8c" stroke-width=".9"/>
-    <path d="M123 68 v3 M126 77 v3 M177 68 v3 M174 77 v3 M131 76 v3 M169 76 v3" fill="none" stroke="#c4c4c4" stroke-width="1"/>
-    <path d="M138 197 Q128 188 117 193 M162 197 Q172 188 183 193" fill="none" stroke="#8c8c8c" stroke-width=".9"/>
+    <path d="M123.0 199 C129.4 150 138.7 80 143 44 C142.5 32 146 24 150 24 C154 24 157.5 32 157 44 C161.3 80 170.6 150 177.0 199 Z" fill="#fff" stroke="none"/>
+    <path d="M123.1 197 C133.2 150 141.5 89.0 143.5 49.0" fill="none" stroke="#c4c4c4" stroke-width="0.8"/>
+    <path d="M127.6 197 C136.0 150 143.5 82.8 145.1 42.8" fill="none" stroke="#c4c4c4" stroke-width="0.8"/>
+    <path d="M132.1 197 C138.8 150 145.2 77.6 146.5 37.6" fill="none" stroke="#8c8c8c" stroke-width="0.9"/>
+    <path d="M136.6 197 C141.6 150 146.7 73.3 147.7 33.3" fill="none" stroke="#8c8c8c" stroke-width="0.9"/>
+    <path d="M141.0 197 C144.4 150 148.0 70.0 148.7 30.0" fill="none" stroke="#8c8c8c" stroke-width="0.9"/>
+    <path d="M145.5 197 C147.2 150 149.1 67.9 149.5 27.9" fill="none" stroke="#111" stroke-width="1.1"/>
+    <path d="M150.0 197 C150.0 150 150.0 67.0 150.0 27.0" fill="none" stroke="#111" stroke-width="1.1"/>
+    <path d="M154.5 197 C152.8 150 150.9 67.9 150.5 27.9" fill="none" stroke="#111" stroke-width="1.1"/>
+    <path d="M159.0 197 C155.6 150 152.0 70.0 151.3 30.0" fill="none" stroke="#8c8c8c" stroke-width="0.9"/>
+    <path d="M163.4 197 C158.4 150 153.3 73.3 152.3 33.3" fill="none" stroke="#8c8c8c" stroke-width="0.9"/>
+    <path d="M167.9 197 C161.2 150 154.8 77.6 153.5 37.6" fill="none" stroke="#8c8c8c" stroke-width="0.9"/>
+    <path d="M172.4 197 C164.0 150 156.5 82.8 154.9 42.8" fill="none" stroke="#c4c4c4" stroke-width="0.8"/>
+    <path d="M176.9 197 C166.8 150 158.5 89.0 156.5 49.0" fill="none" stroke="#c4c4c4" stroke-width="0.8"/>
+    <path d="M143 44 C142.5 32 146 24 150 24 C154 24 157.5 32 157 44" fill="none" stroke="#111" stroke-width="1.2"/>
+    <circle cx="160.1" cy="38.3" r="0.87" fill="#111" stroke="none"/>
+    <circle cx="161.9" cy="31.6" r="0.69" fill="#111" stroke="none"/>
+    <circle cx="168.0" cy="112.0" r="0.99" fill="#c4c4c4" stroke="none"/>
+    <circle cx="142.7" cy="32.4" r="0.61" fill="#c4c4c4" stroke="none"/>
+    <circle cx="120.7" cy="180.7" r="0.51" fill="#111" stroke="none"/>
+    <circle cx="122.7" cy="168.4" r="0.65" fill="#111" stroke="none"/>
+    <circle cx="127.5" cy="141.5" r="0.54" fill="#111" stroke="none"/>
+    <circle cx="141.8" cy="49.6" r="0.97" fill="#c4c4c4" stroke="none"/>
+    <circle cx="177.7" cy="176.1" r="0.96" fill="#c4c4c4" stroke="none"/>
+    <circle cx="157.8" cy="32.0" r="0.86" fill="#8c8c8c" stroke="none"/>
+    <circle cx="125.2" cy="170.5" r="0.66" fill="#8c8c8c" stroke="none"/>
+    <circle cx="140.6" cy="54.7" r="0.99" fill="#8c8c8c" stroke="none"/>
+    <circle cx="162.6" cy="84.0" r="0.63" fill="#c4c4c4" stroke="none"/>
+    <circle cx="146.3" cy="28.2" r="0.85" fill="#111" stroke="none"/>
+    <circle cx="159.3" cy="30.9" r="0.46" fill="#c4c4c4" stroke="none"/>
+    <circle cx="163.4" cy="69.5" r="0.53" fill="#c4c4c4" stroke="none"/>
+    <circle cx="134.3" cy="106.7" r="0.51" fill="#111" stroke="none"/>
+    <circle cx="171.9" cy="158.6" r="1.01" fill="#c4c4c4" stroke="none"/>
+    <circle cx="123.3" cy="191.0" r="1.00" fill="#8c8c8c" stroke="none"/>
+    <circle cx="169.3" cy="130.1" r="1.03" fill="#111" stroke="none"/>
+    <circle cx="129.1" cy="118.9" r="0.47" fill="#c4c4c4" stroke="none"/>
+    <circle cx="143.1" cy="27.1" r="0.52" fill="#8c8c8c" stroke="none"/>
+    <circle cx="170.3" cy="118.6" r="0.68" fill="#111" stroke="none"/>
+    <circle cx="131.1" cy="111.9" r="0.76" fill="#111" stroke="none"/>
+    <circle cx="169.9" cy="114.7" r="0.72" fill="#111" stroke="none"/>
+    <circle cx="148.2" cy="28.2" r="0.89" fill="#c4c4c4" stroke="none"/>
+    <circle cx="160.1" cy="47.4" r="0.77" fill="#c4c4c4" stroke="none"/>
+    <circle cx="126.8" cy="149.8" r="0.64" fill="#c4c4c4" stroke="none"/>
+    <circle cx="129.6" cy="141.1" r="0.63" fill="#111" stroke="none"/>
+    <circle cx="175.9" cy="183.1" r="0.63" fill="#c4c4c4" stroke="none"/>
+    <circle cx="174.2" cy="155.6" r="0.83" fill="#8c8c8c" stroke="none"/>
+    <circle cx="137.1" cy="88.4" r="0.67" fill="#c4c4c4" stroke="none"/>
+    <circle cx="164.1" cy="90.8" r="0.68" fill="#c4c4c4" stroke="none"/>
+    <circle cx="175.0" cy="153.2" r="0.57" fill="#c4c4c4" stroke="none"/>
+    <circle cx="141.4" cy="56.3" r="0.89" fill="#8c8c8c" stroke="none"/>
+    <circle cx="178.6" cy="161.0" r="0.61" fill="#c4c4c4" stroke="none"/>
+    <circle cx="164.5" cy="40.1" r="0.60" fill="#8c8c8c" stroke="none"/>
+    <circle cx="173.2" cy="162.5" r="0.94" fill="#c4c4c4" stroke="none"/>
+    <circle cx="163.5" cy="73.3" r="0.93" fill="#c4c4c4" stroke="none"/>
+    <circle cx="137.2" cy="32.1" r="0.71" fill="#111" stroke="none"/>
+    <circle cx="138.1" cy="64.5" r="0.50" fill="#c4c4c4" stroke="none"/>
+    <circle cx="175.3" cy="144.4" r="0.51" fill="#c4c4c4" stroke="none"/>
+    <circle cx="122.1" cy="191.1" r="0.47" fill="#111" stroke="none"/>
+    <circle cx="175.4" cy="142.0" r="0.49" fill="#8c8c8c" stroke="none"/>
+    <circle cx="169.0" cy="134.0" r="0.90" fill="#8c8c8c" stroke="none"/>
+    <circle cx="166.9" cy="34.8" r="0.82" fill="#c4c4c4" stroke="none"/>
+    <circle cx="140.6" cy="29.7" r="0.71" fill="#111" stroke="none"/>
+    <circle cx="140.5" cy="31.3" r="0.56" fill="#8c8c8c" stroke="none"/>
+    <circle cx="136.0" cy="37.7" r="0.89" fill="#8c8c8c" stroke="none"/>
+    <circle cx="133.9" cy="93.0" r="0.74" fill="#c4c4c4" stroke="none"/>
+    <circle cx="138.4" cy="56.4" r="0.53" fill="#8c8c8c" stroke="none"/>
+    <circle cx="140.8" cy="33.6" r="0.71" fill="#c4c4c4" stroke="none"/>
+    <circle cx="173.2" cy="136.1" r="0.71" fill="#8c8c8c" stroke="none"/>
+    <circle cx="182.8" cy="191.5" r="0.89" fill="#c4c4c4" stroke="none"/>
+    <circle cx="137.3" cy="25.9" r="0.95" fill="#8c8c8c" stroke="none"/>
+    <circle cx="182.0" cy="189.7" r="0.79" fill="#c4c4c4" stroke="none"/>
+    <circle cx="172.9" cy="167.7" r="0.69" fill="#111" stroke="none"/>
+    <circle cx="167.9" cy="120.0" r="0.87" fill="#c4c4c4" stroke="none"/>
+    <circle cx="127.3" cy="168.5" r="0.56" fill="#c4c4c4" stroke="none"/>
+    <circle cx="175.1" cy="159.2" r="0.80" fill="#111" stroke="none"/>
+    <circle cx="171.6" cy="119.4" r="0.66" fill="#8c8c8c" stroke="none"/>
+    <circle cx="131.0" cy="115.5" r="0.74" fill="#c4c4c4" stroke="none"/>
+    <circle cx="165.2" cy="99.8" r="0.83" fill="#111" stroke="none"/>
+    <circle cx="174.5" cy="183.3" r="1.03" fill="#c4c4c4" stroke="none"/>
+    <circle cx="135.2" cy="99.0" r="0.84" fill="#111" stroke="none"/>
+    <circle cx="173.6" cy="155.2" r="0.63" fill="#c4c4c4" stroke="none"/>
+    <circle cx="132.5" cy="111.1" r="0.84" fill="#8c8c8c" stroke="none"/>
+    <circle cx="160.0" cy="38.6" r="0.88" fill="#c4c4c4" stroke="none"/>
+    <circle cx="129.5" cy="129.9" r="0.88" fill="#8c8c8c" stroke="none"/>
+    <circle cx="133.8" cy="119.6" r="0.93" fill="#8c8c8c" stroke="none"/>
+    <circle cx="155.1" cy="27.9" r="0.98" fill="#8c8c8c" stroke="none"/>
+    <circle cx="159.6" cy="46.1" r="0.58" fill="#8c8c8c" stroke="none"/>
+    <circle cx="140.9" cy="39.3" r="0.53" fill="#8c8c8c" stroke="none"/>
+    <circle cx="141.7" cy="45.7" r="0.96" fill="#c4c4c4" stroke="none"/>
+    <circle cx="165.7" cy="31.9" r="0.86" fill="#c4c4c4" stroke="none"/>
+    <circle cx="170.6" cy="116.2" r="0.71" fill="#8c8c8c" stroke="none"/>
+    <circle cx="158.3" cy="24.3" r="0.92" fill="#8c8c8c" stroke="none"/>
+    <circle cx="134.1" cy="109.4" r="0.87" fill="#8c8c8c" stroke="none"/>
+    <circle cx="163.2" cy="86.7" r="0.55" fill="#111" stroke="none"/>
+    <circle cx="171.5" cy="148.0" r="0.62" fill="#111" stroke="none"/>
+    <circle cx="138.8" cy="75.3" r="0.93" fill="#c4c4c4" stroke="none"/>
+    <circle cx="160.0" cy="33.2" r="0.99" fill="#c4c4c4" stroke="none"/>
+    <circle cx="171.2" cy="119.9" r="0.97" fill="#8c8c8c" stroke="none"/>
+    <circle cx="168.5" cy="136.5" r="0.76" fill="#8c8c8c" stroke="none"/>
+    <circle cx="136.6" cy="68.3" r="0.71" fill="#c4c4c4" stroke="none"/>
+    <circle cx="134.5" cy="94.7" r="0.61" fill="#c4c4c4" stroke="none"/>
+    <circle cx="128.4" cy="129.7" r="0.69" fill="#111" stroke="none"/>
+    <circle cx="164.4" cy="103.9" r="0.68" fill="#c4c4c4" stroke="none"/>
+    <circle cx="159.0" cy="45.6" r="0.98" fill="#8c8c8c" stroke="none"/>
+    <circle cx="134.7" cy="39.6" r="0.86" fill="#8c8c8c" stroke="none"/>
+    <circle cx="131.1" cy="116.6" r="0.52" fill="#c4c4c4" stroke="none"/>
+    <circle cx="151.8" cy="27.4" r="0.83" fill="#111" stroke="none"/>
+    <circle cx="142.1" cy="24.8" r="1.00" fill="#c4c4c4" stroke="none"/>
+    <circle cx="149.5" cy="21.8" r="0.83" fill="#111" stroke="none"/>
+    <circle cx="129.9" cy="114.2" r="0.77" fill="#111" stroke="none"/>
+    <circle cx="171.5" cy="120.2" r="0.76" fill="#8c8c8c" stroke="none"/>
+    <circle cx="127.1" cy="130.1" r="0.89" fill="#c4c4c4" stroke="none"/>
+    <circle cx="133.8" cy="103.8" r="0.56" fill="#8c8c8c" stroke="none"/>
+    <circle cx="176.1" cy="176.8" r="0.48" fill="#c4c4c4" stroke="none"/>
+    <circle cx="135.9" cy="85.3" r="0.88" fill="#c4c4c4" stroke="none"/>
+    <path d="M121.0 198 Q110 188 102 194 M179.0 198 Q190 188 198 194" fill="none" stroke="#8c8c8c" stroke-width=".9"/>
+    <ellipse cx="150" cy="199" rx="30" ry="4.5" fill="none" stroke="#c4c4c4" stroke-width=".9"/>
     <path d="M252.9 204.5 Q245.9 159.2 217.9 201.6" fill="none" stroke="#111" stroke-width="1"/>
     <path d="M252.9 204.5 Q247.9 169.9 228.2 202.2" fill="none" stroke="#8c8c8c" stroke-width="0.8"/>
     <path d="M252.9 204.5 Q244.2 166.4 209.7 201.2" fill="none" stroke="#c4c4c4" stroke-width="0.8"/>
@@ -146,7 +252,7 @@ button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:tra
 <!-- 1. LANDING -->
 <section class="screen" id="s-home">
   <div class="top">
-    <div class="title">Drumheller Fountain<small>Welcome! Make a wish here.</small></div>
+    <div class="title"><small class="kicker">Welcome to</small>Drumheller Fountain</div>
     <button class="btn sm" data-go="map">Map →</button>
   </div>
   <div class="spacer"></div>
