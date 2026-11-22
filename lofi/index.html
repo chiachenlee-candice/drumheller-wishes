@@ -183,7 +183,7 @@ button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:tra
 <section class="screen" id="s-wish" hidden>
   <div class="top"><button class="btn sm" data-go="design">← Back</button><div class="spacer"></div><span class="datechip" id="wishDate"></span></div>
   <div class="coin bigcoin"><img id="wishCoin" alt="Your coin"></div>
-  <label for="wishText" style="font-weight:700;margin-top:6px">Write your wish</label>
+  <label for="wishText" style="font-weight:700;margin-top:6px">Write your wish <span style="font-weight:400;color:var(--mid)">(optional)</span></label>
   <textarea id="wishText" class="lined" maxlength="160" placeholder="I wish…"></textarea>
   <label class="check" for="priv"><input type="checkbox" id="priv"> Keep my wish private (others only see my coin)</label>
   <button class="btn primary" id="toToss">Next: toss it →</button>
@@ -201,7 +201,7 @@ button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:tra
 
 <!-- 5. COIN COLLECTION (pops up after the toss) -->
 <section class="screen" id="s-coll" hidden>
-  <div class="top"><button class="btn sm" id="collClose" aria-label="Close">✕</button>
+  <div class="top"><button class="btn sm" id="collClose">← Home</button>
     <div class="tabs" role="tablist"><button role="tab" id="tabMine" aria-selected="true">Your coin</button><button role="tab" id="tabAll" aria-selected="false">All coins</button></div>
   </div>
   <div class="grid" id="grid"></div>
@@ -213,7 +213,6 @@ button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:tra
     <span class="spark" style="left:-18px;top:8%">✦</span><span class="spark" style="right:-20px;top:22%">✦</span><span class="spark" style="left:6%;bottom:-16px">✦</span><span class="spark" style="right:4%;top:-18px">✦</span></div>
   <h2>Your coin is in the fountain</h2>
   <p>Your wish is on its way. May it come true.</p>
-  <p class="tapnote">Tap anywhere to see your coin</p>
 </section>
 
 <!-- 6. VIEW ONE COIN -->
@@ -328,8 +327,7 @@ $('#toWish').onclick = () => {
   draft.img = padImage(); $('#wishCoin').src = draft.img; $('#wishDate').textContent = today(); show('wish');
 };
 $('#toToss').onclick = () => {
-  draft.wish = $('#wishText').value.trim(); draft.priv = $('#priv').checked;
-  if (!draft.wish) { toast('Write a wish first'); $('#wishText').focus(); return; }
+  draft.wish = $('#wishText').value.trim(); draft.priv = $('#priv').checked; // writing a wish is optional
   show('toss');
 };
 
@@ -397,16 +395,18 @@ function splash(x, y, k){
 let collTab = 'mine', fresh = null;
 // Smooth page changes: fade + small lift, run on the compositor (opacity/transform only).
 const EASE = 'cubic-bezier(.2,.8,.2,1)';
-function fadeIn(el, from = 'translateY(18px)', ms = 420){
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+// If the browser throttles frames (background tab, low-power mode) an animation can stall; finish it on a timer.
+async function settle(a, ms){ await Promise.race([a.finished.catch(()=>{}), sleep(ms + 150)]); try { a.finish(); } catch(e) {} }
+async function fadeIn(el, from = 'translateY(18px)', ms = 420){
   el.style.opacity = '0'; el.hidden = false;
   const a = el.animate([{opacity:0, transform:from}, {opacity:1, transform:'none'}], {duration:ms, easing:EASE});
-  el.style.opacity = ''; return a.finished.catch(()=>{});
+  el.style.opacity = ''; await settle(a, ms);
 }
-function fadeOut(el, ms = 320){
+async function fadeOut(el, ms = 320){
   const a = el.animate([{opacity:1}, {opacity:0}], {duration:ms, easing:'ease-in', fill:'forwards'});
-  return a.finished.catch(()=>{}).then(() => { el.hidden = true; a.cancel(); });
+  await settle(a, ms); el.hidden = true; a.cancel();
 }
-const sleep = ms => new Promise(r => setTimeout(r, ms));
 const decodeImgs = el => Promise.all([...el.querySelectorAll('img')].slice(0, 8).map(i => i.decode ? i.decode().catch(()=>{}) : 0));
 
 async function afterSplash(coin){
@@ -419,7 +419,7 @@ async function afterSplash(coin){
     {duration:1400, delay:200 + i*180, easing:'ease-out', iterations:2}));
   // build the collection underneath while the message shows
   collTab = 'mine'; fresh = coin.id; renderGrid(); const c = $('#s-coll'); c.hidden = false; decodeImgs(c);
-  await Promise.race([sleep(2600), new Promise(r => w.addEventListener('click', r, {once:true}))]);
+  await Promise.race([sleep(1500), new Promise(r => w.addEventListener('click', r, {once:true}))]);
   await fadeOut(w, 380);
 }
 async function openColl(tab){
@@ -444,7 +444,7 @@ function openView(id){
   const c = all().find(x => x.id === id); if (!c) return;
   $('#viewCoin').src = c.img; $('#viewDate').textContent = c.date;
   $('#viewWho').textContent = c.mine ? 'Your coin' + (c.priv ? ' (wish kept private)' : '') : "A visitor's coin";
-  $('#viewText').innerHTML = c.priv && !c.mine ? '<i>This wish is private.</i>' : esc(c.wish);
+  $('#viewText').innerHTML = c.priv && !c.mine ? '<i>This wish is private.</i>' : c.wish ? esc(c.wish) : '<i>A silent wish (nothing written).</i>';
   $('#s-view').hidden = false;
 }
 $('#viewBack').onclick = () => $('#s-view').hidden = true;
