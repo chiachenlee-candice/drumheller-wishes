@@ -53,7 +53,10 @@ button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:tra
 
 /* toss */
 #cam{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(1)}
-#tossStage{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 70px);transform:translateX(-50%)}
+/* toss screen: fountain cropped to the basin, enlarged, centred in the space above the coin */
+#tossStage{position:fixed;left:50%;top:40%;transform:translate(-50%,-50%);width:min(100vw,500px);aspect-ratio:1460/770}
+/* with the camera on, the aim ring is larger and rounder so it can sit over the real basin */
+#tossStage.cam #target{left:3%;width:94%;top:34%;height:46%}
 #tossCoin{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 60px);width:120px;height:120px;margin-left:-60px;touch-action:none;z-index:5;background:var(--paper)}
 #tossCoin.flying{transition:transform .65s cubic-bezier(.3,.6,.4,1)}
 .hint{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 196px);transform:translateX(-50%);text-align:center;font-weight:700;background:var(--paper);border:2px solid var(--ink);padding:6px 12px;white-space:nowrap;z-index:4}
@@ -233,6 +236,7 @@ document.querySelectorAll('[data-art]').forEach((el, n) => {
     art.querySelectorAll(`[stroke="url(#${id})"]`).forEach(x => x.setAttribute('stroke', `url(#${id}-${n})`)); });
   el.appendChild(art);
 });
+$('#tossArt svg').setAttribute('viewBox', '120 0 1460 770'); // toss screen: crop to the fountain
 const esc = s => s.replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 const today = () => new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
 
@@ -345,10 +349,15 @@ function endDrag(){
   if (Math.abs(d.dy) < 10) toast('Swipe up on the coin to toss it');
 }
 function basinPoint(){
-  // Inner water ellipse of the line drawing: cx 850, cy 582, rx 650, ry 45 in a 1700x770 box.
-  const r = $('#tossStage').getBoundingClientRect(), u = r.width/1700, k = r.width/300;
+  const r = $('#tossStage').getBoundingClientRect(), k = r.width/300;
   const a = Math.random()*Math.PI*2, d = Math.sqrt(Math.random())*.7;
-  return {x: r.left + (850 + Math.cos(a)*650*d)*u, y: r.top + (582 + Math.sin(a)*45*d)*u, k};
+  if (stream) { // camera: land inside the dashed aim ring
+    const t = $('#target').getBoundingClientRect();
+    return {x: t.left + t.width/2 + Math.cos(a)*t.width/2*.85*d, y: t.top + t.height/2 + Math.sin(a)*t.height/2*.85*d, k};
+  }
+  // drawing: inner water ellipse cx 850, cy 582, rx 650, ry 45, shown through a viewBox starting at x=120, 1460 wide
+  const u = r.width/1460;
+  return {x: r.left + (850-120 + Math.cos(a)*650*d)*u, y: r.top + (582 + Math.sin(a)*45*d)*u, k};
 }
 function toss(){
   tossed = true; $('#tossHint').hidden = true;
@@ -453,7 +462,7 @@ async function camOn(){
 }
 function camOff(){ if (stream) stream.getTracks().forEach(t => t.stop()); stream = null; applyCam(); }
 function applyCam(){
-  const on = !!stream; $('#cam').hidden = !on; $('#tossArt').hidden = on; $('#target').hidden = !on;
+  const on = !!stream; $('#cam').hidden = !on; $('#tossArt').hidden = on; $('#target').hidden = !on; $('#tossStage').classList.toggle('cam', on);
   $('#camBtn').textContent = on ? 'Camera: on' : 'Camera: off';
 }
 $('#camBtn').onclick = () => { if (stream) { camWanted = false; camOff(); } else { camWanted = true; camOn(); } };
